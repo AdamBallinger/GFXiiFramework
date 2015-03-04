@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\D3D11">
+      <UniqueIdentifier>{622609f6-a0ac-4d67-a640-45c68363299c}</UniqueIdentifier>
+      <Extensions>D3D11</Extensions>
+    </Filter>
+    <Filter Include="Header Files\OpenGL">
+      <UniqueIdentifier>{853a6d3b-e5ad-478c-b4b1-947af7506795}</UniqueIdentifier>
+      <Extensions>*OGL*</Extensions>
+    </Filter>
+    <Filter Include="Source Files\D3D11">
+      <UniqueIdentifier>{07c0a50f-6dcc-4aad-8bc4-68ea37f1d05c}</UniqueIdentifier>
+      <Extensions>D3D11</Extensions>
+    </Filter>
+    <Filter Include="Source Files\OpenGL">
+      <UniqueIdentifier>{73bc5da8-15ce-4507-8639-14771fcdf5db}</UniqueIdentifier>
+      <Extensions>OGL</Extensions>
+    </Filter>
+    <Filter Include="Asset">
+      <UniqueIdentifier>{9af8f6ae-5759-4bdf-a1bd-54d7a4df9b1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asset\Shaders">
+      <UniqueIdentifier>{39bb3aee-6965-4b83-bf68-92592c8de646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asset\Shaders\GLSL">
+      <UniqueIdentifier>{93050cfa-8438-454d-9fb3-8caf6546a87c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asset\Shaders\HLSL">
+      <UniqueIdentifier>{92f9ec45-9dbb-48af-813d-d214fae79351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLEW">
+      <UniqueIdentifier>{5f363ded-54ad-4a95-b466-a289b2288a34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FlightSimulatorComponents">
+      <UniqueIdentifier>{d4b533cc-51ca-4cad-a718-fbeebfa82b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Framework">
+      <UniqueIdentifier>{d7276bf4-ca5c-4b7b-8b1c-79f647af51de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FlightSimulatorComponents">
+      <UniqueIdentifier>{9fb7ee0f-a349-4afb-a2ae-bcacd8ac237f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework">
+      <UniqueIdentifier>{ee2657e5-8e5d-4fec-b0da-d191314af082}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\glm">
+      <UniqueIdentifier>{ce8e9b39-c921-4238-9219-815c722ced81}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D3D11\D3D11Cube.h">
+      <Filter>Header Files\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11Shader.h">
+      <Filter>Header Files\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11Texture.h">
+      <Filter>Header Files\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11Window.h">
+      <Filter>Header Files\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\OGLWindow.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\OGLCube.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\OGLShader.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\OGLTexture.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLEW\include\glew.h">
+      <Filter>GLEW</Filter>
+    </ClInclude>
+    <ClInclude Include="GLEW\include\glxew.h">
+      <Filter>GLEW</Filter>
+    </ClInclude>
+    <ClInclude Include="GLEW\include\wglew.h">
+      <Filter>GLEW</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11Mesh.h">
+      <Filter>Header Files\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\OGLMesh.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseApplication.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseTexture.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="GFXiiFramework.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageIO.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJFileReader.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderable.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderWindow.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderBase.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D3D11\D3D11Cube.cpp">
+      <Filter>Source Files\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11Shader.cpp">
+      <Filter>Source Files\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11Texture.cpp">
+      <Filter>Source Files\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11Window.cpp">
+      <Filter>Source Files\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\OGLWindow.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\OGLCube.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\OGLShader.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\OGLTexture.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11Mesh.cpp">
+      <Filter>Source Files\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\OGLMesh.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseApplication.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="GFXiiFramework.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageIO.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJFileReader.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="GFXiiFramework.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GFXiiFramework.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\asset\shader\glsl\basic.frag">
+      <Filter>Asset\Shaders\GLSL</Filter>
+    </None>
+    <None Include="..\asset\shader\glsl\basic.vert">
+      <Filter>Asset\Shaders\GLSL</Filter>
+    </None>
+    <None Include="GLEW\glew32.dll">
+      <Filter>GLEW</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\asset\shader\hlsl\basic_fs.hlsl">
+      <Filter>Asset\Shaders\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\asset\shader\hlsl\basic_vs.hlsl">
+      <Filter>Asset\Shaders\HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="GLEW\lib\glew32.lib">
+      <Filter>GLEW</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

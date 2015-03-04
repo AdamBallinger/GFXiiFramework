@@ -1,0 +1,2 @@
+Skybox texture
+Source: http://www.keithlantz.net/2011/10/rendering-a-skybox-using-a-cube-map-with-opengl-and-glsl/
