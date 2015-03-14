@@ -56,9 +56,6 @@
     <Filter Include="Source Files\Framework">
       <UniqueIdentifier>{ee2657e5-8e5d-4fec-b0da-d191314af082}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\glm">
-      <UniqueIdentifier>{ce8e9b39-c921-4238-9219-815c722ced81}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D11\D3D11Cube.h">
@@ -142,6 +139,12 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="quaternion.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D11\D3D11Cube.cpp">
@@ -193,6 +196,12 @@
       <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="quaternion.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
   </ItemGroup>

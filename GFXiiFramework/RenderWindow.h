@@ -29,4 +29,5 @@ class RenderWindow
 		virtual BOOL		MouseLBDown ( int x, int y ) = 0;
 		virtual BOOL		MouseLBUp ( int x, int y ) = 0;
 		virtual BOOL		MouseMove ( int x, int y ) = 0;
+		virtual void HandleMouseScroll(int) = 0;
 };

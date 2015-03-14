@@ -77,4 +77,6 @@ protected:
 		BOOL		MouseLBDown ( int x, int y );
 		BOOL		MouseLBUp ( int x, int y );
 		BOOL		MouseMove ( int x, int y );
+		void HandleKeyDown(WPARAM);
+		void HandleMouseScroll(int);
 };

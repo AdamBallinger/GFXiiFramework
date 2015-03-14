@@ -27,6 +27,15 @@ class OGLWindow : public RenderWindow
 		int                     m_uniform_texture;
 		int						m_texDefaultSampler;
 
+		static const byte W = 0x57;
+		static const byte A = 0x41;
+		static const byte S = 0x53;
+		static const byte D = 0x44;
+		static const byte Z = 0x5A;
+		static const byte X = 0x58;
+		static const byte Q = 0x51;
+		static const byte E = 0x45;
+
 protected:
 
 		HGLRC CreateOGLContext (HDC hdc);
@@ -47,4 +56,6 @@ protected:
 		BOOL		MouseLBDown ( int x, int y );
 		BOOL		MouseLBUp ( int x, int y );
 		BOOL		MouseMove ( int x, int y );
+		void HandleKeyDown();
+		void HandleMouseScroll(int);
 };

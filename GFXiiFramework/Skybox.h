@@ -1,20 +1,31 @@
 #ifndef skybox_h
 #define skybox_h
 
-#include <string>
+#include "OpenGL/OGLCube.h"
+#include "glm/glm.hpp"
 
-class Skybox
+class Skybox : public OGLCube
 {
 private:
 
+	// Store textures for each face of the sky box 
+	// Index: 0 -> Front
+	// Index: 1 -> Back
+	// Index: 2 -> Left
+	// Index: 3 -> Right
+	// Index: 4 -> Top
+	// Index: 5 -> Bottom
+	OGLTexture* m_textures[6];
 
 public:
 
 	Skybox();
 	~Skybox();
 
-	void LoadTexture(std::string _directory, std::string _front, std::string _back, std::string _left, std::string _right, std::string _top, std::string _bottom);
-	void Render();
+	void Init();
+
+	// Override OGLCube
+	virtual void Render();
 
 };
 

@@ -1,10 +1,18 @@
 #include "OGLWindow.h"
 #include "Resource.h"
+#include "../Skybox.h"
 #include "GLEW/include/glew.h"
 
+#include <Windows.h>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <Camera.h>
+#include <iostream>
 
 Renderable* plane_mesh;
 OGLTexture* plane_texture;
+Camera* camera;
+Skybox* skybox;
 
 OGLWindow::OGLWindow()
 {
@@ -17,6 +25,8 @@ OGLWindow::~OGLWindow()
 	delete m_mesh;
 	delete plane_mesh;
 	delete m_shader;
+	delete camera;
+	delete skybox;
 
 	DestroyOGLContext();
 }
@@ -119,11 +129,27 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	glewInit();
 
+	ShowCursor(false);
+
 	InitOGLState();
 
 	m_width = width;
 	m_height = height;
 
+	SetCursorPos(m_width / 2, m_height / 2);
+
+	camera = new Camera();
+	camera->InitCamera();
+	camera->SetCameraAspectRatio((float)width / (float)height);
+	camera->SetCameraFOV(70);
+
+	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
+		1.0f, 1000.0f);
+
+	camera->SetProjectionMatrix(&cam_projection[0][0]);
+
+	skybox = new Skybox();
+	skybox->Init();
 	
 	m_mesh = new OGLMesh(L"../asset/models/house.obj");
 
@@ -144,32 +170,53 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 void OGLWindow::Render()
 {
 	float modelview[16];
-	float projection[16];
-
-	//m_euler[0] = 15;//m_euler[0] > 360.0 ? 0 : m_euler[0] + 1.0;
-	//m_euler[1] = m_euler[1] > 360.0 ? 0 : m_euler[1] + 0.2;
-	////m_euler[2] = m_euler[2] > 360.0 ? 0 : m_euler[2] + .01;
 
 	Renderable* prenderable = static_cast<Renderable*>(plane_mesh);
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	
+
+	glDisable(GL_DEPTH_TEST);
+	skybox->Render();
+	glEnable(GL_DEPTH_TEST);
+
 	glTranslatef( 0.0, 0.0, -100.0 );
-	glRotatef( m_euler[0], 1.0, 0.0, 0.0 );
-	glRotatef( m_euler[1], 0.0, 1.0, 0.0 );
-	glRotatef( m_euler[2], 0.0, 0.0, 1.0 );
 
-	glGetFloatv( GL_MODELVIEW_MATRIX, modelview );
-	glGetFloatv( GL_PROJECTION_MATRIX, projection);
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
-	glUniformMatrix4fv( m_uniform_modelview, 1, GL_FALSE, modelview );
-	glUniformMatrix4fv( m_uniform_projection, 1, GL_FALSE, projection );
+	glm::mat4 proj = camera->GetProjectionMatrix();
+	glm::mat4 view = *camera->GetViewMatrix();
+	glm::mat4 model = glm::mat4(1.0f);
+
+	// Create ModelViewProjection matrix
+	glm::mat4 mvp = proj * view * model;
+	
+	glUniformMatrix4fv( m_uniform_modelview, 1, GL_FALSE, modelview);
+	glUniformMatrix4fv( m_uniform_projection, 1, GL_FALSE, &mvp[0][0] );
 
 	glBindSampler(0, m_texDefaultSampler);
 
 	prenderable->Render();
+
+	// Get and store current cursor position
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+	int mX = cursorPos.x;
+	int mY = cursorPos.y;
+	int xDiff = (m_width / 2) - mX;
+	int yDiff = (m_height / 2) - mY;
+
+	// Yaw and pitch the camera based on the difference the mouse travelled from the centre of the window.
+	if (xDiff != 0 || yDiff != 0)
+	{
+		camera->RotateCamera(xDiff, yDiff, 0);
+	}
+	
+	// Set the cursor back to the centre of the screen
+	SetCursorPos(m_width / 2, m_height / 2);
+
+	HandleKeyDown();
 
 	SwapBuffers(m_hdc);
 
@@ -179,13 +226,17 @@ void OGLWindow::Render()
 void OGLWindow::Resize( int width, int height )
 {
 	float aspect_ratio = (float)width/(float)height;
+	camera->SetCameraAspectRatio(aspect_ratio);
 
 	glViewport( 0, 0, width, height );
 	
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	//glFrustum( -5*aspect_ratio, 5*aspect_ratio, -5, 5, 1.0, 100.0 );
-	gluPerspective(60.0, aspect_ratio, 1.0, 1000.0);
+
+	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
+		1.0f, 1000.0f);
+
+	camera->SetProjectionMatrix(&cam_projection[0][0]);
 	
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
@@ -242,7 +293,72 @@ BOOL OGLWindow::MouseLBUp ( int x, int y )
 	return TRUE;
 }
 
+
 BOOL OGLWindow::MouseMove ( int x, int y )
 {
 	return TRUE;
+}
+
+void OGLWindow::HandleMouseScroll(int _scroll)
+{
+	if (_scroll == 120)
+	{
+		camera->ZoomCamera(5.0f);
+	}
+	else
+	{
+		camera->ZoomCamera(-5.0f);
+	}
+}
+
+void OGLWindow::HandleKeyDown()
+{
+	//Use windows GetAsyncKeyState to allow multiple key presses at once. (Diagonal movement)
+	if (GetAsyncKeyState(W))
+	{
+		//Dolly
+		camera->DollyCamera(1);
+	}
+
+	if (GetAsyncKeyState(A))
+	{
+		//Strafe
+		camera->StrafeCamera(-1);
+	}
+
+	if (GetAsyncKeyState(S))
+	{
+		//Dolly
+		camera->DollyCamera(-1);
+	}
+
+	if (GetAsyncKeyState(D))
+	{
+		//Strafe
+		camera->StrafeCamera(1);
+	}
+
+	if (GetAsyncKeyState(Z))
+	{
+		//Ped
+		camera->PedCamera(1);
+	}
+
+	if (GetAsyncKeyState(X))
+	{
+		//Ped
+		camera->PedCamera(-1);
+	}
+
+	if (GetAsyncKeyState(Q))
+	{
+		//Roll
+		camera->RotateCamera(0, 0, -1);
+	}
+
+	if (GetAsyncKeyState(E))
+	{
+		//Roll
+		camera->RotateCamera(0, 0, 1);
+	}
 }

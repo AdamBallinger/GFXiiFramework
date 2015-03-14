@@ -145,6 +145,10 @@ LRESULT CALLBACK BaseApplication::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LP
 			s_oglapp->GetApplicationWindow()->MouseLBDown( GET_X_LPARAM(lparam), GET_Y_LPARAM(lparam) );
 			break;
 
+		case WM_MOUSEWHEEL:
+			s_oglapp->GetApplicationWindow()->HandleMouseScroll(GET_WHEEL_DELTA_WPARAM(wparam));
+			break;
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;

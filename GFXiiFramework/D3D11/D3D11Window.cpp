@@ -228,3 +228,8 @@ BOOL D3D11Window::MouseMove ( int x, int y )
 {
 	return TRUE;
 }
+
+void D3D11Window::HandleMouseScroll(int _scroll)
+{
+
+}

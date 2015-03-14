@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="BaseApplication.h" />
     <ClInclude Include="BaseTexture.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="D3D11\D3D11Cube.h" />
     <ClInclude Include="D3D11\D3D11Mesh.h" />
     <ClInclude Include="D3D11\D3D11Shader.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="OpenGL\OGLShader.h" />
     <ClInclude Include="OpenGL\OGLTexture.h" />
     <ClInclude Include="OpenGL\OGLWindow.h" />
+    <ClInclude Include="quaternion.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Resource.h" />
@@ -41,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApplication.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="D3D11\D3D11Cube.cpp" />
     <ClCompile Include="D3D11\D3D11Mesh.cpp" />
     <ClCompile Include="D3D11\D3D11Shader.cpp" />
@@ -54,6 +57,7 @@
     <ClCompile Include="OpenGL\OGLShader.cpp" />
     <ClCompile Include="OpenGL\OGLTexture.cpp" />
     <ClCompile Include="OpenGL\OGLWindow.cpp" />
+    <ClCompile Include="quaternion.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vector3.cpp" />
