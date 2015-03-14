@@ -88,6 +88,7 @@ EImageIOStatus ImageIO::LoadTGA(const char* filename, unsigned char** buffer, in
 	else
 	{
 		//unrecognised header signiture.
+		fprintf(stdout, "%s has a bad header signiture.", filename);
 		fclose(pfile);
 		return E_IMAGEIO_ERROR;
 	}

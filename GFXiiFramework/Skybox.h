@@ -17,6 +17,22 @@ private:
 	// Index: 5 -> Bottom
 	OGLTexture* m_textures[6];
 
+	glm::vec3 m_position;
+
+	float dimensions = 512.0f;
+
+	struct SimpleVertex
+	{
+		float position[3];
+		float colour[3];
+		float uv[2];
+	};
+
+	unsigned int	m_vao;
+	unsigned int	m_vbo_verts;
+	unsigned int	m_vbo_colours;
+	unsigned int	m_vbo_indices;
+
 public:
 
 	Skybox();
@@ -26,6 +42,11 @@ public:
 
 	// Override OGLCube
 	virtual void Render();
+
+	inline void SetPosition(glm::vec3 _position)
+	{
+		m_position = _position;
+	}
 
 };
 

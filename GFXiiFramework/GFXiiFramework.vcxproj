@@ -158,8 +158,6 @@
       <ShaderModel>4.0_level_9_1</ShaderModel>
       <DisableOptimizations>false</DisableOptimizations>
       <EnableDebuggingInformation>false</EnableDebuggingInformation>
-      <ShaderType>
-      </ShaderType>
     </FxCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

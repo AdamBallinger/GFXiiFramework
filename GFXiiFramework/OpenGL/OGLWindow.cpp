@@ -144,7 +144,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	camera->SetCameraFOV(70);
 
 	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
-		1.0f, 1000.0f);
+		1.0f, 5000.0f);
 
 	camera->SetProjectionMatrix(&cam_projection[0][0]);
 
@@ -176,7 +176,7 @@ void OGLWindow::Render()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-
+	//skybox->SetPosition(*camera->GetCameraPosition());
 	glDisable(GL_DEPTH_TEST);
 	skybox->Render();
 	glEnable(GL_DEPTH_TEST);
