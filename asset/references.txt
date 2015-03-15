@@ -1,0 +1,1 @@
+skybox: http://www.braynzarsoft.net/vision/index.php?p=VT&texture=25

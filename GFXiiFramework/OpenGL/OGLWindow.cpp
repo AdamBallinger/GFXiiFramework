@@ -176,7 +176,7 @@ void OGLWindow::Render()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	//skybox->SetPosition(*camera->GetCameraPosition());
+	skybox->SetPosition(*camera->GetCameraPosition());
 	glDisable(GL_DEPTH_TEST);
 	skybox->Render();
 	glEnable(GL_DEPTH_TEST);

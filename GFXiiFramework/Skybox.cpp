@@ -17,7 +17,7 @@ void Skybox::Init()
 	m_position = glm::vec3(0.0f, 0.0f, 0.0f);
 	// Load the skybox texture files for each face.
 	m_textures[0] = new OGLTexture();
-	m_textures[0]->CreateTextureFromFile("../asset/texture/map2.tga");
+	m_textures[0]->CreateTextureFromFile("../asset/texture/ocean.tga");
 }
 
 
