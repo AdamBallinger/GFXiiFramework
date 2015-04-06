@@ -24,6 +24,7 @@
     <ClInclude Include="GLEW\include\glxew.h" />
     <ClInclude Include="GLEW\include\wglew.h" />
     <ClInclude Include="ImageIO.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="OBJFileReader.h" />
     <ClInclude Include="OpenGL\OGLCube.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="OpenGL\OGLShader.h" />
     <ClInclude Include="OpenGL\OGLTexture.h" />
     <ClInclude Include="OpenGL\OGLWindow.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="quaternion.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="RenderWindow.h" />
@@ -38,6 +40,7 @@
     <ClInclude Include="ShaderBase.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
@@ -51,14 +54,17 @@
     <ClCompile Include="D3D11\D3D11Window.cpp" />
     <ClCompile Include="GFXiiFramework.cpp" />
     <ClCompile Include="ImageIO.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="OBJFileReader.cpp" />
     <ClCompile Include="OpenGL\OGLCube.cpp" />
     <ClCompile Include="OpenGL\OGLMesh.cpp" />
     <ClCompile Include="OpenGL\OGLShader.cpp" />
     <ClCompile Include="OpenGL\OGLTexture.cpp" />
     <ClCompile Include="OpenGL\OGLWindow.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="quaternion.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
@@ -72,6 +78,8 @@
   <ItemGroup>
     <None Include="..\asset\shader\glsl\basic.frag" />
     <None Include="..\asset\shader\glsl\basic.vert" />
+    <None Include="..\asset\shader\glsl\skybox.frag" />
+    <None Include="..\asset\shader\glsl\skybox.vert" />
     <None Include="GLEW\glew32.dll" />
   </ItemGroup>
   <ItemGroup>

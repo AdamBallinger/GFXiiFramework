@@ -103,6 +103,21 @@ public:
 		return m_projectionMatrix;
 	}
 
+	inline float GetXRotation()
+	{
+		return totalXRotation;
+	}
+
+	inline float GetYRotation()
+	{
+		return totalYRotation;
+	}
+
+	inline float GetZRotation()
+	{
+		return totalZRotation;
+	}
+
 	//TODO: Implement the following camera movement
 	void							StrafeCamera(float amount);
 	void							DollyCamera(float amount);

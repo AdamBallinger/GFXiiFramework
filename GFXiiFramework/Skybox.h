@@ -4,18 +4,12 @@
 #include "OpenGL/OGLCube.h"
 #include "glm/glm.hpp"
 
-class Skybox : public OGLCube
+class Skybox
 {
 private:
 
-	// Store textures for each face of the sky box 
-	// Index: 0 -> Front
-	// Index: 1 -> Back
-	// Index: 2 -> Left
-	// Index: 3 -> Right
-	// Index: 4 -> Top
-	// Index: 5 -> Bottom
-	OGLTexture* m_textures[6];
+	// Store texture for the skybox (Cubemap)
+	OGLTexture* m_texture;
 
 	glm::vec3 m_position;
 
@@ -40,8 +34,7 @@ public:
 
 	void Init();
 
-	// Override OGLCube
-	virtual void Render();
+	void Render();
 
 	inline void SetPosition(glm::vec3 _position)
 	{

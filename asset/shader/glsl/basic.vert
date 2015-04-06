@@ -19,6 +19,7 @@ out vec4 outPosInLight;	//output: vertex position in light space
 void main()
 {	
 	gl_Position = projection*modelview*position;
-		
+	
+	outNormal = inNormal;
 	outUV = inUV;
 }

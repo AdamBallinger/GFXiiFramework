@@ -1,18 +1,12 @@
 #include "OGLWindow.h"
 #include "Resource.h"
-#include "../Skybox.h"
 #include "GLEW/include/glew.h"
 
-#include <Windows.h>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <Camera.h>
-#include <iostream>
 
-Renderable* plane_mesh;
-OGLTexture* plane_texture;
-Camera* camera;
-Skybox* skybox;
+#include <Windows.h>
+#include <iostream>
 
 OGLWindow::OGLWindow()
 {
@@ -25,8 +19,10 @@ OGLWindow::~OGLWindow()
 	delete m_mesh;
 	delete plane_mesh;
 	delete m_shader;
+	delete m_skybox_shader;
 	delete camera;
 	delete skybox;
+	delete terrain;
 
 	DestroyOGLContext();
 }
@@ -116,7 +112,7 @@ BOOL OGLWindow::DestroyOGLContext()
 BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 {
 	m_hwnd = CreateWindowEx( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
-		L"RenderWindow", L"OGLWindow", WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
+		L"RenderWindow", L"Flight Simulator", WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
 		0, 0, width, height, NULL, NULL, hInstance, NULL);
 
 	if ( ! m_hwnd )
@@ -144,12 +140,15 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	camera->SetCameraFOV(70);
 
 	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
-		1.0f, 5000.0f);
+		0.1f, 5000.0f);
 
 	camera->SetProjectionMatrix(&cam_projection[0][0]);
 
 	skybox = new Skybox();
 	skybox->Init();
+
+	terrain = new Terrain();
+	terrain->CreateTerrainFromHeightMap("../asset/texture/terrain.tga");
 	
 	m_mesh = new OGLMesh(L"../asset/models/house.obj");
 
@@ -171,17 +170,25 @@ void OGLWindow::Render()
 {
 	float modelview[16];
 
-	Renderable* prenderable = static_cast<Renderable*>(plane_mesh);
+	Renderable* prenderable = static_cast<Renderable*>(m_mesh);
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
+
 	skybox->SetPosition(*camera->GetCameraPosition());
+
+	glTranslatef(0.0f, 0.0f, -100.0f);
+
+	m_skybox_shader->ActivateShaderProgram();
+
 	glDisable(GL_DEPTH_TEST);
 	skybox->Render();
 	glEnable(GL_DEPTH_TEST);
 
-	glTranslatef( 0.0, 0.0, -100.0 );
+	m_skybox_shader->DeactivateShaderProgram();
+	m_shader->ActivateShaderProgram();
+	prenderable->Render();
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
@@ -197,8 +204,6 @@ void OGLWindow::Render()
 
 	glBindSampler(0, m_texDefaultSampler);
 
-	prenderable->Render();
-
 	// Get and store current cursor position
 	POINT cursorPos;
 	GetCursorPos(&cursorPos);
@@ -206,11 +211,12 @@ void OGLWindow::Render()
 	int mY = cursorPos.y;
 	int xDiff = (m_width / 2) - mX;
 	int yDiff = (m_height / 2) - mY;
+	float camera_smoothing = 0.2f;
 
 	// Yaw and pitch the camera based on the difference the mouse travelled from the centre of the window.
-	if (xDiff != 0 || yDiff != 0)
+	if (abs(xDiff) > 0 || abs(yDiff) > 0)
 	{
-		camera->RotateCamera(xDiff, yDiff, 0);
+		camera->RotateCamera(xDiff * camera_smoothing, yDiff * camera_smoothing, 0);
 	}
 	
 	// Set the cursor back to the centre of the screen
@@ -234,7 +240,7 @@ void OGLWindow::Resize( int width, int height )
 	glLoadIdentity();
 
 	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
-		1.0f, 1000.0f);
+		0.1f, 5000.0f);
 
 	camera->SetProjectionMatrix(&cam_projection[0][0]);
 	
@@ -253,19 +259,32 @@ void OGLWindow::InitOGLState()
 
 	//Initialise OGL shader
 	m_shader = new OGLShaderProgram();
+	m_skybox_shader = new OGLShaderProgram();
 
 	m_shader->CreateShaderProgram();
 	m_shader->AttachAndCompileShaderFromFile(L"../asset/shader/glsl/basic.vert", SHADER_VERTEX);
 	m_shader->AttachAndCompileShaderFromFile(L"../asset/shader/glsl/basic.frag", SHADER_FRAGMENT);
 
+	m_skybox_shader->CreateShaderProgram();
+	m_skybox_shader->AttachAndCompileShaderFromFile(L"../asset/shader/glsl/skybox.vert", SHADER_VERTEX);
+	m_skybox_shader->AttachAndCompileShaderFromFile(L"../asset/shader/glsl/skybox.frag", SHADER_FRAGMENT);
+
 	m_shader->BindAttributeLocation( 0, "position" );
 	m_shader->BindAttributeLocation( 1, "inNormal" );
-	m_shader->BindAttributeLocation( 2, "inUV" );
+	m_shader->BindAttributeLocation(2, "inUV");
+
+	m_skybox_shader->BindAttributeLocation(0, "position");
+	m_skybox_shader->BindAttributeLocation(1, "inNormal");
+	m_skybox_shader->BindAttributeLocation(2, "inUV");
+
+	glBindFragDataLocation(m_skybox_shader->GetProgramHandle(), 0, "outFrag");
 
 	glBindFragDataLocation( m_shader->GetProgramHandle(), 0, "outFrag" );
 
 	m_shader->BuildShaderProgram();
 	m_shader->ActivateShaderProgram();
+
+	m_skybox_shader->BuildShaderProgram();
 
 	m_uniform_modelview = glGetUniformLocation(m_shader->GetProgramHandle(), "modelview");
 	m_uniform_projection = glGetUniformLocation(m_shader->GetProgramHandle(), "projection");
@@ -360,5 +379,11 @@ void OGLWindow::HandleKeyDown()
 	{
 		//Roll
 		camera->RotateCamera(0, 0, 1);
+	}
+
+	if (GetAsyncKeyState(VK_ESCAPE))
+	{
+		// Close Application
+		ExitProcess(0);
 	}
 }

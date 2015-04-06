@@ -111,6 +111,17 @@ void Camera::PedCamera(float _amount)
 
 void Camera::RotateCamera(float _yaw, float _pitch, float _roll)
 {
+	totalXRotation += _yaw;
+	totalYRotation += _pitch;
+	totalZRotation += _roll;
+
+	if (totalXRotation > 360.0f) totalXRotation = 0.0f;
+	if (totalXRotation < 0.0f) totalXRotation = 360.0f;
+	if (totalYRotation > 360.0f) totalYRotation = 0.0f;
+	if (totalYRotation < 0.0f) totalYRotation = 360.0f;
+	if (totalZRotation > 360.0f) totalZRotation = 0.0f;
+	if (totalZRotation < 0.0f) totalZRotation = 360.0f;
+
 	_yaw = glm::radians(_yaw);
 	_pitch = glm::radians(_pitch);
 	_roll = glm::radians(_roll);
@@ -131,13 +142,13 @@ void Camera::RotateCamera(float _yaw, float _pitch, float _roll)
 	DIR[2] = m_direction[2];
 
 	Quaternion yawQuat;
-	yawQuat.SetQuaternion(UP * sin(_yaw / 2), cos(_yaw / 2));
+	yawQuat.SetQuaternion(UP * glm::sin(_yaw / 2), glm::cos(_yaw / 2));
 
 	Quaternion pitchQuat;
-	pitchQuat.SetQuaternion(RIGHT * sin(_pitch / 2), cos(_pitch / 2));
+	pitchQuat.SetQuaternion(RIGHT * glm::sin(_pitch / 2), glm::cos(_pitch / 2));
 
 	Quaternion rollQuat;
-	rollQuat.SetQuaternion(DIR * sin(_roll / 2), cos(_roll / 2));
+	rollQuat.SetQuaternion(DIR * glm::sin(_roll / 2), glm::cos(_roll / 2));
 
 	Quaternion upQuat;
 	upQuat.SetQuaternion(UP, 0);
@@ -160,9 +171,6 @@ void Camera::RotateCamera(float _yaw, float _pitch, float _roll)
 	UP = upQuat.GetVector();
 	DIR = dirQuat.GetVector();
 
-	UP.Normalise();
-	DIR.Normalise();
-
 	m_direction[0] = DIR[0];
 	m_direction[1] = DIR[1];
 	m_direction[2] = DIR[2];
@@ -171,7 +179,11 @@ void Camera::RotateCamera(float _yaw, float _pitch, float _roll)
 	m_upVector[1] = UP[1];
 	m_upVector[2] = UP[2];
 
+	m_direction = glm::normalize(m_direction);
+	m_upVector = glm::normalize(m_upVector);
+
 	m_rightVector = glm::cross(m_direction, m_upVector);
+
 	UpdateViewMatrix();
 }
 
@@ -181,5 +193,5 @@ void Camera::ZoomCamera(float _amount)
 
 	if (m_fov > 90) m_fov = 90;
 	if (m_fov < 10) m_fov = 10;
-	m_projectionMatrix = glm::perspective(glm::radians(m_fov), m_aspectRatio, 1.0f, 1000.0f);
+	m_projectionMatrix = glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.1f, 5000.0f);
 }

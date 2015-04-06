@@ -15,9 +15,9 @@ Skybox::~Skybox()
 void Skybox::Init()
 {
 	m_position = glm::vec3(0.0f, 0.0f, 0.0f);
-	// Load the skybox texture files for each face.
-	m_textures[0] = new OGLTexture();
-	m_textures[0]->CreateTextureFromFile("../asset/texture/ocean.tga");
+	// Load the skybox texture file.
+	m_texture = new OGLTexture();
+	m_texture->CreateTextureFromFile("../asset/texture/ocean.tga");
 }
 
 
@@ -107,7 +107,7 @@ void Skybox::Render()
 	glBindVertexArray(0);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_textures[0]->m_syshandle);
+	glBindTexture(GL_TEXTURE_2D, m_texture->m_syshandle);
 
 	glBindVertexArray(m_vao);
 
