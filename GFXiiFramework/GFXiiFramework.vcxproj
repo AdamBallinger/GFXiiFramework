@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AreaLight.h" />
     <ClInclude Include="BaseApplication.h" />
+    <ClInclude Include="BaseLight.h" />
     <ClInclude Include="BaseTexture.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="D3D11\D3D11Cube.h" />
@@ -25,7 +27,6 @@
     <ClInclude Include="GLEW\include\glxew.h" />
     <ClInclude Include="GLEW\include\wglew.h" />
     <ClInclude Include="ImageIO.h" />
-    <ClInclude Include="Light.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="OBJFileReader.h" />
     <ClInclude Include="OpenGL\OGLCube.h" />
@@ -40,12 +41,14 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ShaderBase.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="D3D11\D3D11Cube.cpp" />
@@ -56,7 +59,6 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GFXiiFramework.cpp" />
     <ClCompile Include="ImageIO.cpp" />
-    <ClCompile Include="Light.cpp" />
     <ClCompile Include="OBJFileReader.cpp" />
     <ClCompile Include="OpenGL\OGLCube.cpp" />
     <ClCompile Include="OpenGL\OGLMesh.cpp" />
@@ -66,6 +68,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="quaternion.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vector3.cpp" />

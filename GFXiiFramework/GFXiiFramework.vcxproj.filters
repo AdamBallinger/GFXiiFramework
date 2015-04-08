@@ -151,10 +151,16 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
+    <ClInclude Include="DirectionalLight.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
+    <ClInclude Include="AreaLight.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseLight.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
   </ItemGroup>
@@ -222,10 +228,13 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Light.cpp">
+    <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionalLight.cpp">
+    <ClCompile Include="AreaLight.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
   </ItemGroup>

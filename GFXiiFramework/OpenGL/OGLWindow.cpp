@@ -21,6 +21,10 @@ OGLWindow::~OGLWindow()
 	delete skybox;
 	delete terrain;
 
+	delete directionalLight;
+	delete areaLight;
+	delete spotLight;
+
 	DestroyOGLContext();
 }
 
@@ -141,6 +145,27 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	camera->SetProjectionMatrix(&cam_projection[0][0]);
 
+	directionalLight = new DirectionalLight();
+	directionalLight->SetDirection(glm::vec3(-1.0f, 0.0f, 0.0f));
+	directionalLight->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	directionalLight->SetIntensity(1.0f);
+
+	areaLight = new AreaLight();
+	areaLight->SetPosition(glm::vec3(10.0f, 0.0f, -40.0f));
+	areaLight->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	areaLight->SetIntensity(0.7f);
+	areaLight->SetConstAtten(0.3f);
+	areaLight->SetLinearAtten(0.007f);
+	areaLight->SetExpAtten(0.0008f);
+
+	spotLight = new SpotLight();
+	spotLight->SetPosition(glm::vec3(20.0f, 1.0f, -90.0f));
+	spotLight->SetColor(glm::vec3(0.0f, 0.0f, 1.0f));
+	spotLight->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
+	spotLight->SetIntensity(1.5f);
+	spotLight->SetExponent(0.3f);
+	spotLight->SetCutOff(15.0);
+
 	skybox = new Skybox();
 	skybox->Init();
 
@@ -171,13 +196,14 @@ void OGLWindow::Render()
 
 	glLoadIdentity();
 
+	glBindSampler(0, m_texDefaultSampler);
+
 	skybox->SetPosition(*camera->GetCameraPosition());
 
 	angle += .5f;
 
 	// RENDER SKYBOX
 	m_skybox_shader->ActivateShaderProgram();
-	BuildMatrices();
 	SetUniforms();
 	glDisable(GL_DEPTH_TEST);
 	skybox->Render();
@@ -185,14 +211,11 @@ void OGLWindow::Render()
 
 	// RENDER HOUSE
 	m_shader->ActivateShaderProgram();
-	glTranslatef(20.0f, 0, -50.0f);
+	glTranslatef(20.0f, 0, -70.0f);
 	glScalef(2, 2, 2);
-	//glRotatef(angle, 0, 1, 0);
-	BuildMatrices();
+	glRotatef(angle, 0, 1, 0);
 	SetUniforms();
 	prenderable->Render();
-
-	glBindSampler(0, m_texDefaultSampler);
 
 	// Get and store current cursor position
 	POINT cursorPos;
@@ -285,6 +308,7 @@ void OGLWindow::InitOGLState()
 	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
 	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_MIN_FILTER , GL_LINEAR);  
 	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_MAG_FILTER , GL_LINEAR);
+
 }
 
 BOOL OGLWindow::MouseLBDown ( int x, int y )
@@ -375,6 +399,9 @@ void OGLWindow::HandleKeyDown()
 
 void OGLWindow::SetUniforms()
 {
+	//First rebuild all the matrices
+	BuildMatrices();
+
 	// Matrix uniforms
 	glUniformMatrix4fv(0, 1, GL_FALSE, modelview);
 	glUniformMatrix4fv(1, 1, GL_FALSE, &MVP[0][0]);
@@ -385,14 +412,30 @@ void OGLWindow::SetUniforms()
 	glUniform3f(6, campos[0], campos[1], campos[2]); 
 
 	// Lighting uniforms
-	glm::vec3 lightDir(-1.0f, 0.0f, 0.0f);
-	glm::vec3 lightAmbient(0.3f, 0.3f, 0.3f);
-	glm::vec3 lightDiffuse(1.0f, 1.0f, 1.0f);
-	glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
+	glm::vec3 lightDir = directionalLight->GetDirection();
+	glm::vec3 lightColor = directionalLight->GetColor();
 	glUniform3f(7, lightDir[0], lightDir[1], lightDir[2]);
-	glUniform3f(8, lightAmbient[0], lightAmbient[1], lightAmbient[2]); // Light ambient
-	glUniform3f(9, lightDiffuse[0], lightDiffuse[1], lightDiffuse[2]); // Light diffuse
-	glUniform3f(10, lightSpecular[0], lightSpecular[1], lightSpecular[2]); // Light specular
+	glUniform3f(8, lightColor[0], lightColor[1], lightColor[2]);
+	glUniform1f(9, directionalLight->GetIntensity());
+
+	glm::vec3 areaPos = areaLight->GetPosition();
+	glm::vec3 areaCol = areaLight->GetColor();
+	glUniform3f(16, areaPos[0], areaPos[1], areaPos[2]);
+	glUniform3f(17, areaCol[0], areaCol[1], areaCol[2]);
+	glUniform1f(18, areaLight->GetIntensity());
+	glUniform1f(19, areaLight->GetConstAtten());
+	glUniform1f(20, areaLight->GetLinearAtten());
+	glUniform1f(21, areaLight->GetExpAtten());
+
+	glm::vec3 spotPos = spotLight->GetPosition();
+	glm::vec3 spotCol = spotLight->GetColor();
+	glm::vec3 spotDir = spotLight->GetDirection();
+	glUniform3f(10, spotPos[0], spotPos[1], spotPos[2]);
+	glUniform3f(11, spotCol[0], spotCol[1], spotCol[2]);
+	glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
+	glUniform1f(13, spotLight->GetIntensity());
+	glUniform1f(14, spotLight->GetExponent());
+	glUniform1f(15, spotLight->GetCutOff());
 }
 
 

@@ -22,7 +22,8 @@ void main()
 {	
 	gl_Position = projection*modelview*position;
 	
-	viewvec = campos - position;
-	outNormal = normalmatrix * inNormal;
+	viewvec = normalize(campos - position);
+	outNormal = normalize(normalmatrix * inNormal); // Ensure normals are correct after transformations
 	outUV = inUV;
+	outPosInLight = modelview * position;
 }

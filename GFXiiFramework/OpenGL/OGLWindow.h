@@ -12,6 +12,9 @@
 #include "Skybox.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "DirectionalLight.h"
+#include "AreaLight.h"
+#include "SpotLight.h"
 
 class OGLWindow : public RenderWindow
 {
@@ -32,6 +35,11 @@ class OGLWindow : public RenderWindow
 		Camera* camera;
 		Skybox* skybox;
 		Terrain* terrain;
+
+		//Lights
+		DirectionalLight* directionalLight;
+		AreaLight* areaLight;
+		SpotLight* spotLight;
 
 		// Store tge ModelViewProjection matrix
 		glm::mat4 MVP;
