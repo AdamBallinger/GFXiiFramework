@@ -154,6 +154,9 @@
     <ClInclude Include="Light.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D11\D3D11Cube.cpp">
@@ -220,6 +223,9 @@
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
   </ItemGroup>

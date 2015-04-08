@@ -1,5 +1,9 @@
 #pragma once
 
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+
 #include "RenderWindow.h"
 #include "OGLCube.h"
 #include "OGLMesh.h"
@@ -28,6 +32,14 @@ class OGLWindow : public RenderWindow
 		Camera* camera;
 		Skybox* skybox;
 		Terrain* terrain;
+
+		// Store tge ModelViewProjection matrix
+		glm::mat4 MVP;
+		glm::mat4 projection;
+		glm::mat4 view;
+		glm::mat4 model;
+		glm::mat4 normal;
+		float modelview[16];
 
 		//Declear an OGL shader program
 		OGLShaderProgram		*m_shader;
@@ -69,4 +81,6 @@ protected:
 		BOOL		MouseMove ( int x, int y );
 		void HandleKeyDown();
 		void HandleMouseScroll(int);
+		void SetUniforms();
+		void BuildMatrices();
 };

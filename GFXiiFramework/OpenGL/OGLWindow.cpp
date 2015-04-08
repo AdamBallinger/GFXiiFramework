@@ -2,9 +2,6 @@
 #include "Resource.h"
 #include "GLEW/include/glew.h"
 
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <Windows.h>
 #include <iostream>
 
@@ -165,11 +162,9 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	return TRUE;
 }
-
+float angle = 0.0f;
 void OGLWindow::Render()
 {
-	float modelview[16];
-
 	Renderable* prenderable = static_cast<Renderable*>(m_mesh);
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -178,29 +173,24 @@ void OGLWindow::Render()
 
 	skybox->SetPosition(*camera->GetCameraPosition());
 
-	glTranslatef(0.0f, 0.0f, -100.0f);
+	angle += .5f;
 
+	// RENDER SKYBOX
 	m_skybox_shader->ActivateShaderProgram();
-
+	BuildMatrices();
+	SetUniforms();
 	glDisable(GL_DEPTH_TEST);
 	skybox->Render();
 	glEnable(GL_DEPTH_TEST);
 
-	m_skybox_shader->DeactivateShaderProgram();
+	// RENDER HOUSE
 	m_shader->ActivateShaderProgram();
+	glTranslatef(20.0f, 0, -50.0f);
+	glScalef(2, 2, 2);
+	//glRotatef(angle, 0, 1, 0);
+	BuildMatrices();
+	SetUniforms();
 	prenderable->Render();
-
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
-
-	glm::mat4 proj = camera->GetProjectionMatrix();
-	glm::mat4 view = *camera->GetViewMatrix();
-	glm::mat4 model = glm::mat4(1.0f);
-
-	// Create ModelViewProjection matrix
-	glm::mat4 mvp = proj * view * model;
-	
-	glUniformMatrix4fv( m_uniform_modelview, 1, GL_FALSE, modelview);
-	glUniformMatrix4fv( m_uniform_projection, 1, GL_FALSE, &mvp[0][0] );
 
 	glBindSampler(0, m_texDefaultSampler);
 
@@ -286,10 +276,6 @@ void OGLWindow::InitOGLState()
 
 	m_skybox_shader->BuildShaderProgram();
 
-	m_uniform_modelview = glGetUniformLocation(m_shader->GetProgramHandle(), "modelview");
-	m_uniform_projection = glGetUniformLocation(m_shader->GetProgramHandle(), "projection");
-	m_uniform_texture = glGetUniformLocation(m_shader->GetProgramHandle(), "texColour");
-
 	glUniform1i( m_uniform_texture, 0 );
 	
 	//Create a texture sampler
@@ -311,7 +297,6 @@ BOOL OGLWindow::MouseLBUp ( int x, int y )
 {
 	return TRUE;
 }
-
 
 BOOL OGLWindow::MouseMove ( int x, int y )
 {
@@ -386,4 +371,40 @@ void OGLWindow::HandleKeyDown()
 		// Close Application
 		ExitProcess(0);
 	}
+}
+
+void OGLWindow::SetUniforms()
+{
+	// Matrix uniforms
+	glUniformMatrix4fv(0, 1, GL_FALSE, modelview);
+	glUniformMatrix4fv(1, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(5, 1, GL_FALSE, &normal[0][0]);
+
+	// Vector uniforms
+	glm::vec3 campos = *camera->GetCameraPosition();
+	glUniform3f(6, campos[0], campos[1], campos[2]); 
+
+	// Lighting uniforms
+	glm::vec3 lightDir(-1.0f, 0.0f, 0.0f);
+	glm::vec3 lightAmbient(0.3f, 0.3f, 0.3f);
+	glm::vec3 lightDiffuse(1.0f, 1.0f, 1.0f);
+	glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
+	glUniform3f(7, lightDir[0], lightDir[1], lightDir[2]);
+	glUniform3f(8, lightAmbient[0], lightAmbient[1], lightAmbient[2]); // Light ambient
+	glUniform3f(9, lightDiffuse[0], lightDiffuse[1], lightDiffuse[2]); // Light diffuse
+	glUniform3f(10, lightSpecular[0], lightSpecular[1], lightSpecular[2]); // Light specular
+}
+
+
+void OGLWindow::BuildMatrices()
+{
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
+
+	projection = camera->GetProjectionMatrix();
+	view = *camera->GetViewMatrix();
+	model = glm::mat4(1.0f);
+	normal = glm::inverseTranspose(glm::make_mat4(modelview));
+
+	// Create ModelViewProjection matrix
+	MVP = projection * view * model;
 }

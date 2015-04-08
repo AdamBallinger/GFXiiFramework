@@ -5,6 +5,8 @@ layout (location = 1) uniform mat4 projection;	//projection matrix
 layout (location = 2) uniform vec4 lightpos;	//light position
 layout (location = 3) uniform mat4 lightmatrix;	//light matrix
 layout (location = 4) uniform mat4 lightproj;	//light projection matrix
+layout (location = 5) uniform mat4 normalmatrix; // normal matrix (inverse transpose model)
+layout (location = 6) uniform vec4 campos;
 
 layout (location = 0) in vec4 position;	//vertex attribute: position
 layout (location = 1) in vec4 inNormal;	//vertex attribute: normal
@@ -20,6 +22,7 @@ void main()
 {	
 	gl_Position = projection*modelview*position;
 	
-	outNormal = inNormal;
+	viewvec = campos - position;
+	outNormal = normalmatrix * inNormal;
 	outUV = inUV;
 }

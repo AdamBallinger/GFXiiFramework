@@ -16,7 +16,7 @@ layout (location = 0) out vec4 outFrag;
 
 void main()
 {
-	vec4 red = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vec4 ambient = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
-	outFrag = red * texture(texColour, outUV);
+	outFrag = texture(texColour, outUV) * ambient;
 }

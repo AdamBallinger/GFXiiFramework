@@ -19,6 +19,7 @@
     <ClInclude Include="D3D11\D3D11Shader.h" />
     <ClInclude Include="D3D11\D3D11Texture.h" />
     <ClInclude Include="D3D11\D3D11Window.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GFXiiFramework.h" />
     <ClInclude Include="GLEW\include\glew.h" />
     <ClInclude Include="GLEW\include\glxew.h" />
@@ -52,6 +53,7 @@
     <ClCompile Include="D3D11\D3D11Shader.cpp" />
     <ClCompile Include="D3D11\D3D11Texture.cpp" />
     <ClCompile Include="D3D11\D3D11Window.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GFXiiFramework.cpp" />
     <ClCompile Include="ImageIO.cpp" />
     <ClCompile Include="Light.cpp" />

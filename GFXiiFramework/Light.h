@@ -7,49 +7,26 @@ class Light
 {
 private:
 
-	glm::vec3 *lightDir;
-	glm::vec3 *lightColor;
-
-	float lightAmbient;
-	float lightDiffuse;
-	float lightSpecular;
+	glm::vec3 color;
+	float intensity;
 
 public:
 
 	Light();
-	Light(glm::vec3);
-	~Light();
+	Light(glm::vec3 _color, float _intensity);
 
-	inline glm::vec3& GetLightDirection()
+	glm::vec3 GetColor()
 	{
-		return *lightDir;
+		return color;
 	}
 
-	inline glm::vec3& GetLightColor()
+	float GetIntensity()
 	{
-		return *lightColor;
+		return intensity;
 	}
 
-	inline float& GetLightAmbient()
-	{
-		return lightAmbient;
-	}
-
-	inline float& GetLightDiffuse()
-	{
-		return lightDiffuse;
-	}
-
-	inline float& GetLightSpecular()
-	{
-		return lightSpecular;
-	}
-
-	void SetLightDirection(glm::vec3);
-	void SetLightColor(glm::vec3);
-	void SetLightAmbient(float);
-	void SetLightDiffuse(float);
-	void SetLightSpecular(float);
+	void SetColor(glm::vec3);
+	void SetIntensity(float);
 
 };
 

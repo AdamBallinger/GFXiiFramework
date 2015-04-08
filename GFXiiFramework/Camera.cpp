@@ -18,6 +18,10 @@ void Camera::InitCamera()
 	m_direction = glm::vec3(0.0f, 0.0, -1.0f);
 	m_rightVector = glm::cross(m_direction, m_upVector);
 	m_upVector = glm::cross(m_rightVector, m_direction);
+
+	totalXRotation = 0.0f;
+	totalYRotation = 0.0f;
+	totalZRotation = 0.0f;
 	UpdateViewMatrix();
 }
 
