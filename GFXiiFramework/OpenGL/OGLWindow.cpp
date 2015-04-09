@@ -149,10 +149,10 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	directionalLight = new DirectionalLight();
 	directionalLight->SetDirection(glm::vec3(-1.0f, 0.0f, 0.0f));
 	directionalLight->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	directionalLight->SetIntensity(1.0f);
+	directionalLight->SetIntensity(0.5f);
 
 	areaLight = new AreaLight();
-	areaLight->SetPosition(glm::vec3(10.0f, 0.0f, -40.0f));
+	areaLight->SetPosition(glm::vec3(10.0f, 0.0f, -10.0f));
 	areaLight->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	areaLight->SetIntensity(0.7f);
 	areaLight->SetConstAtten(0.3f);
@@ -160,7 +160,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	areaLight->SetExpAtten(0.0008f);
 
 	spotLight = new SpotLight();
-	spotLight->SetPosition(glm::vec3(20.0f, 3.0f, -90.0f));
+	spotLight->SetPosition(glm::vec3(20.0f, 3.0f, -70.0f));
 	spotLight->SetColor(glm::vec3(0.0f, 0.0f, 1.0f));
 	spotLight->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 	spotLight->SetIntensity(1.5f);
@@ -220,7 +220,7 @@ void OGLWindow::Render()
 	// RENDER HOUSE
 	m_shader->ActivateShaderProgram();
 	glTranslatef(20.0f, 0, -70.0f);
-	glScalef(2, 2, 2);
+	glScalef(10, 10, 10);
 	glRotatef(angle, 0, 1, 0);
 	SetUniforms();
 	prenderable->Render();
@@ -277,6 +277,7 @@ void OGLWindow::InitOGLState()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	SetVSync(true);
 
 	//Initialise OGL shader
 	m_shader = new OGLShaderProgram();
@@ -411,8 +412,10 @@ void OGLWindow::SetUniforms()
 	BuildMatrices();
 
 	// Matrix uniforms
-	glUniformMatrix4fv(0, 1, GL_FALSE, modelview);
-	glUniformMatrix4fv(1, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(0, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(1, 1, GL_FALSE, &projection[0][0]);
+	glUniformMatrix4fv(3, 1, GL_FALSE, &model[0][0]);
+	glUniformMatrix4fv(4, 1, GL_FALSE, modelview);
 	glUniformMatrix4fv(5, 1, GL_FALSE, &normal[0][0]);
 
 	// Vector uniforms
@@ -458,4 +461,24 @@ void OGLWindow::BuildMatrices()
 
 	// Create ModelViewProjection matrix
 	MVP = projection * view * model;
+}
+
+void OGLWindow::SetVSync(bool sync)
+{
+	typedef BOOL(APIENTRY *PFNWGLSWAPINTERVALPROC)(int);
+	PFNWGLSWAPINTERVALPROC wglSwapIntervalEXT = 0;
+
+	const char *extensions = (char*)glGetString(GL_EXTENSIONS);
+
+	if (strstr(extensions, "WGL_EXT_swap_control") == 0)
+	{
+		return;
+	}
+	else
+	{
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALPROC)wglGetProcAddress("wglSwapIntervalEXT");
+
+		if (wglSwapIntervalEXT)
+			wglSwapIntervalEXT(sync);
+	}
 }

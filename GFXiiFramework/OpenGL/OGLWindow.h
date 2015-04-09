@@ -93,4 +93,5 @@ protected:
 		void HandleMouseScroll(int);
 		void SetUniforms();
 		void BuildMatrices();
+		void SetVSync(bool);
 };

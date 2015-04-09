@@ -1,30 +1,33 @@
 #version 430
 
-layout (location = 0) uniform mat4 modelview;	//modelview matrix
+layout (location = 0) uniform mat4 view;	//view matrix
 layout (location = 1) uniform mat4 projection;	//projection matrix
 layout (location = 2) uniform vec4 lightpos;	//light position
-layout (location = 3) uniform mat4 lightmatrix;	//light matrix
-layout (location = 4) uniform mat4 lightproj;	//light projection matrix
+layout (location = 3) uniform mat4 model;	//model matrix
+layout (location = 4) uniform mat4 modelview;	// modelview matrix
 layout (location = 5) uniform mat4 normalmatrix; // normal matrix (inverse transpose model)
-layout (location = 6) uniform vec4 campos;
+layout (location = 6) uniform vec3 campos;
 
-layout (location = 0) in vec4 position;	//vertex attribute: position
+layout (location = 0) in vec3 position;	//vertex attribute: position
 layout (location = 1) in vec4 inNormal;	//vertex attribute: normal
 layout (location = 2) in vec2 inUV;		//vertex attribute: texcoords
+layout (location = 3) in vec3 tangent;  //vertex attribute: tangent
 
 out vec4 outNormal;		//output: normal
 out vec4 lightvec;		//output: light vector
 out vec4 viewvec;		//output: view vector
 out vec2 outUV;			//output: texcoords
 out vec4 outPosInLight;	//output: vertex position in light space
+out vec3 outTangent;
 
 void main()
 {	
-	gl_Position = projection*modelview*position;
+	gl_Position = projection * view  * model * modelview * vec4(position, 1.0f);
 	
-	viewvec = campos - (modelview * position);
+	vec3 viewDir = normalize(campos - position).xyz;
+	viewvec = vec4(viewDir, 0.0f);
 	viewvec = normalize(viewvec);
 	outNormal = normalmatrix * inNormal; // Ensure normals are correct after transformations
 	outUV = inUV;
-	outPosInLight = modelview * position;
+	outPosInLight = model * modelview * vec4(position, 1.0f);
 }

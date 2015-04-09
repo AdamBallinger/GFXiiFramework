@@ -58,5 +58,6 @@ struct Vertex
 	Vector3 m_position;
 	Vector3 m_normal;
 	Vector3 m_texcoords;
+	Vector3 m_tangents;
 };
 
