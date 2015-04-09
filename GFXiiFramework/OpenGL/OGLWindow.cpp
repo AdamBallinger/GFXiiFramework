@@ -137,6 +137,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	camera = new Camera();
 	camera->InitCamera();
+	camera->SetCameraPosition(&glm::vec3(0.0f, 20.0f, 0.0f));
 	camera->SetCameraAspectRatio((float)width / (float)height);
 	camera->SetCameraFOV(70);
 
@@ -159,7 +160,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	areaLight->SetExpAtten(0.0008f);
 
 	spotLight = new SpotLight();
-	spotLight->SetPosition(glm::vec3(20.0f, 1.0f, -90.0f));
+	spotLight->SetPosition(glm::vec3(20.0f, 3.0f, -90.0f));
 	spotLight->SetColor(glm::vec3(0.0f, 0.0f, 1.0f));
 	spotLight->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 	spotLight->SetIntensity(1.5f);
@@ -176,8 +177,15 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	m_texture = new OGLTexture();
 	m_texture->CreateTextureFromFile( "../asset/texture/house_diffuse.tga");
-
 	m_mesh->SetTexture( m_texture );
+	
+	m_specularTexture = new OGLTexture();
+	m_specularTexture->CreateTextureFromFile("../asset/texture/house_spec.tga");
+	m_mesh->SetSpecTexture(m_specularTexture);
+
+	m_normalTexture = new OGLTexture();
+	m_normalTexture->CreateTextureFromFile("../asset/texture/house_normal.tga");
+	m_mesh->SetNormalTexture(m_normalTexture);
 
 	plane_mesh = new OGLMesh(L"../asset/models/space_frigate.obj");
 	plane_texture = new OGLTexture();
@@ -414,28 +422,28 @@ void OGLWindow::SetUniforms()
 	// Lighting uniforms
 	glm::vec3 lightDir = directionalLight->GetDirection();
 	glm::vec3 lightColor = directionalLight->GetColor();
-	glUniform3f(7, lightDir[0], lightDir[1], lightDir[2]);
-	glUniform3f(8, lightColor[0], lightColor[1], lightColor[2]);
-	glUniform1f(9, directionalLight->GetIntensity());
+	glUniform3f(8, lightDir[0], lightDir[1], lightDir[2]);
+	glUniform3f(9, lightColor[0], lightColor[1], lightColor[2]);
+	glUniform1f(10, directionalLight->GetIntensity());
 
 	glm::vec3 areaPos = areaLight->GetPosition();
 	glm::vec3 areaCol = areaLight->GetColor();
-	glUniform3f(16, areaPos[0], areaPos[1], areaPos[2]);
-	glUniform3f(17, areaCol[0], areaCol[1], areaCol[2]);
-	glUniform1f(18, areaLight->GetIntensity());
-	glUniform1f(19, areaLight->GetConstAtten());
-	glUniform1f(20, areaLight->GetLinearAtten());
-	glUniform1f(21, areaLight->GetExpAtten());
+	glUniform3f(17, areaPos[0], areaPos[1], areaPos[2]);
+	glUniform3f(19, areaCol[0], areaCol[1], areaCol[2]);
+	glUniform1f(20, areaLight->GetIntensity());
+	glUniform1f(21, areaLight->GetConstAtten());
+	glUniform1f(22, areaLight->GetLinearAtten());
+	glUniform1f(23, areaLight->GetExpAtten());
 
-	glm::vec3 spotPos = spotLight->GetPosition();
-	glm::vec3 spotCol = spotLight->GetColor();
-	glm::vec3 spotDir = spotLight->GetDirection();
-	glUniform3f(10, spotPos[0], spotPos[1], spotPos[2]);
-	glUniform3f(11, spotCol[0], spotCol[1], spotCol[2]);
-	glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
-	glUniform1f(13, spotLight->GetIntensity());
-	glUniform1f(14, spotLight->GetExponent());
-	glUniform1f(15, spotLight->GetCutOff());
+	//glm::vec3 spotPos = spotLight->GetPosition();
+	//glm::vec3 spotCol = spotLight->GetColor();
+	//glm::vec3 spotDir = spotLight->GetDirection();
+	//glUniform3f(10, spotPos[0], spotPos[1], spotPos[2]);
+	//glUniform3f(11, spotCol[0], spotCol[1], spotCol[2]);
+	//glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
+	//glUniform1f(13, spotLight->GetIntensity());
+	//glUniform1f(14, spotLight->GetExponent());
+	//glUniform1f(15, spotLight->GetCutOff());
 }
 
 

@@ -15,7 +15,13 @@ private:
 
 public:
 
-	BaseLight();
+	BaseLight()
+	{
+		//Default values
+		SetDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+		SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+		SetIntensity(1.0f);
+	}
 
 	void SetPosition(glm::vec3 _position)
 	{
@@ -37,6 +43,25 @@ public:
 		intensity = _intensity;
 	}
 
+	glm::vec3 GetPosition()
+	{
+		return position;
+	}
+
+	glm::vec3 GetDirection()
+	{
+		return direction;
+	}
+
+	glm::vec3 GetColor()
+	{
+		return color;
+	}
+
+	float GetIntensity()
+	{
+		return intensity;
+	}
 };
 
 #endif

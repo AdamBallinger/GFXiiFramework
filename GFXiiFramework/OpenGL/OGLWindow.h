@@ -29,6 +29,8 @@ class OGLWindow : public RenderWindow
 		//This is not an ideal place to hold geometry data
 		Renderable		*m_mesh;
 		OGLTexture		*m_texture;
+		OGLTexture		*m_specularTexture;
+		OGLTexture		*m_normalTexture;
 
 		Renderable* plane_mesh;
 		OGLTexture* plane_texture;

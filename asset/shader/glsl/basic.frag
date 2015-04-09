@@ -24,35 +24,29 @@ struct BaseLight
 
 struct DirectionalLight 
 {
-	vec3 direction; // Direction of the light rays
-	vec3 color; // Light color
-	float intensity; // Light intensity
+	BaseLight base;
 };
 
 struct SpotLight
 {
-	vec3 position;
-	vec3 color;
-	vec3 direction;
-	float intensity;
+	BaseLight base;
 	float exponent;
 	float cutOff;
 };
 
 struct AreaLight
 {
-	vec3 position; // Light position
-	vec3 color; // Light color
-	float intensity; 
-	float constantAttenuation; // Light constant attenuation
-	float linearAttenuation; // Light linear attenuation
-	float expAttenuation; // Light exponential attenuation
+	BaseLight base;
+	float constantAttenuation;
+	float linearAttenuation; 
+	float expAttenuation;
 };
 
 layout (location = 7) uniform DirectionalLight directionalLight;
-layout (location = 10) uniform SpotLight spotLight;
-layout (location = 16) uniform AreaLight areaLight;
+layout (location = 11) uniform SpotLight spotLight;
+layout (location = 17) uniform AreaLight areaLight;
 
+vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal);
 vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal);
 vec4 calcSpotLightColor(SpotLight light, vec3 normal);
 vec4 calcAreaLightColor(AreaLight light, vec3 normal);
@@ -64,76 +58,80 @@ void main()
 	vec4 lightingColor = vec4(0.2f, 0.2f, 0.2f, 1.0f); // set default to global ambient
 
 	vec3 normal = normalize(outNormal.xyz);
+	//vec3 normal = texture2D(texNormal, outUV).rgb * 2.0f - 1.0f;
+	//normal = normalize(normal);
 	
-	//Calculate lighting color for lights
+	//Calculate lighting color for light types
 	lightingColor += calcDirectionalLightColor(directionalLight, normal);
-	lightingColor += calcSpotLightColor(spotLight, normal);
-	lightingColor += calcAreaLightColor(areaLight, normal);
+	//lightingColor += calcSpotLightColor(spotLight, normal);
+	//lightingColor += calcAreaLightColor(areaLight, normal);
 
 	outFrag = texDiffuse * lightingColor;
+}
+
+vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal)
+{
+	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec4 diffuseColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec4 specularColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vec4 specMap = texture(texSpec, outUV);
+
+	float diffuseFactor = max(0.0f, dot(normal, -lightDir));
+
+	if(diffuseFactor > 0.0f)
+	{
+		diffuseColor = vec4(light.color * diffuseFactor, 1.0f) * light.intensity;
+
+		vec3 reflection = reflect(lightDir, normal);
+
+		float specularFactor = pow(max(0.0f, dot(normalize(viewvec.xyz), reflection)), 35.0f);
+
+		specularColor = specMap * specularFactor;
+	}
+
+	finalColor = (diffuseColor + specularColor);
+	return finalColor;
 }
 
 vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal)
 {
 	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec4 diffuseColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec4 specularColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	float diffuseFactor = max(0.0f, dot(normal, -light.direction));
-
-	if(diffuseFactor > 0.0f)
-	{
-		diffuseColor = vec4(light.color * diffuseFactor, 1.0f) * light.intensity;
-	}
-	
-	finalColor = diffuseColor;
+	finalColor = calcLightColor(light.base, light.base.direction, normal);
 
 	return finalColor;
 }
 
-vec4 calcSpotLightColor(SpotLight light, vec3 normal)
-{
-	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+//vec4 calcSpotLightColor(SpotLight light, vec3 normal)
+//{
+//	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	vec3 surfaceToLight = normalize(light.position - outPosInLight.xyz);
-	float angle = acos(dot(-surfaceToLight, normalize(light.direction)));
-	float cutOff = radians(clamp(light.cutOff, 0.0f, 90.0));
+//	vec3 surfaceToLight = normalize(light.position - outPosInLight.xyz);
+//	float angle = acos(dot(-surfaceToLight, normalize(light.direction)));
+//	float cutOff = radians(clamp(light.cutOff, 0.0f, 90.0));
 	
-	if(angle < cutOff)
-	{
-		finalColor = vec4(light.color, 1.0f);
-		return finalColor * light.intensity;
-	}
-	else
-	{
-		return finalColor;
-	}
-}
+//	if(angle < cutOff)
+//	{
+//		finalColor = vec4(light.color, 1.0f);
+//		return finalColor * light.intensity;
+//	}
+//	else
+//	{
+//		return finalColor;
+//	}
+//}
 
 vec4 calcAreaLightColor(AreaLight light, vec3 normal)
 {
 	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec4 diffuseColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	vec4 specularColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	vec4 surfaceToLight = outPosInLight - vec4(light.position, 0.0f);
+	vec4 surfaceToLight = outPosInLight - vec4(light.base.position, 0.0f);
 	float lightDistance = length(surfaceToLight);
 	surfaceToLight = normalize(surfaceToLight);
 
-	float diffuseFactor = max(0.0f, dot(-surfaceToLight.xyz, normal));
-	vec4 specMap = texture(texSpec, outUV);
-
-	if(diffuseFactor > 0.0f)
-	{
-		diffuseColor = vec4(light.color, 1.0f) * light.intensity * diffuseFactor;
-		vec4 reflected = reflect(surfaceToLight, vec4(normal, 0.0f));
-		float specularFactor = pow(max(0.0f, dot(viewvec, reflected)), 25.0f);
-
-		specularColor = specMap * specularFactor;
-	}
+	finalColor = calcLightColor(light.base, surfaceToLight.xyz, normal);
 
 	float attenuation = (light.constantAttenuation) + (light.linearAttenuation * lightDistance) + (light.expAttenuation * pow(lightDistance, 2));
 
-	finalColor = (diffuseColor + specularColor);
 	return finalColor / attenuation;
 }

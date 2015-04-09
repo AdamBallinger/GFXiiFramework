@@ -2,28 +2,16 @@
 #define directionallight_h
 
 #include "glm\glm.hpp"
+#include "BaseLight.h"
 
-class DirectionalLight
+class DirectionalLight : public BaseLight
 {
 private:
 
-	glm::vec3 direction;
-	glm::vec3 color;
-
-	float intensity;
 
 public:
 
 	DirectionalLight();
-
-	void SetDirection(glm::vec3);
-	void SetColor(glm::vec3);
-	void SetIntensity(float);
-
-	glm::vec3 GetDirection();
-	glm::vec3 GetColor();
-	
-	float GetIntensity();
 
 };
 

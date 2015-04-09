@@ -8,6 +8,8 @@ class Renderable
 {
 	protected:
 		BaseTexture				*m_tex;
+		BaseTexture				*m_spec;
+		BaseTexture				*m_norm;
 
 	public:
 
@@ -18,5 +20,15 @@ class Renderable
 		inline void				SetTexture( BaseTexture* tex )
 		{
 			m_tex = tex;
+		}
+
+		inline void				SetSpecTexture(BaseTexture* tex)
+		{
+			m_spec = tex;
+		}
+
+		inline void				SetNormalTexture(BaseTexture* tex)
+		{
+			m_norm = tex;
 		}
 };

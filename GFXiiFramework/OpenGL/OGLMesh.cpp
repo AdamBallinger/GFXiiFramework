@@ -28,6 +28,20 @@ void OGLMesh::Render()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texHandle);
 
+	if (m_norm != nullptr)
+	{
+		unsigned int normHandle = dynamic_cast<OGLTexture*>(m_norm)->m_syshandle;
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, normHandle);
+	}
+
+	if (m_spec != nullptr)
+	{
+		unsigned int specHandle = dynamic_cast<OGLTexture*>(m_spec)->m_syshandle;
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, specHandle);
+	}
+
 	glBindVertexArray(m_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo_verts);
 	glDrawArrays(GL_TRIANGLES, 0, m_numtriangles*3);
