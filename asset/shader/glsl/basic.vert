@@ -24,7 +24,7 @@ void main()
 	
 	viewvec = campos - (modelview * position);
 	viewvec = normalize(viewvec);
-	outNormal = normalize(normalmatrix * inNormal); // Ensure normals are correct after transformations
+	outNormal = normalmatrix * inNormal; // Ensure normals are correct after transformations
 	outUV = inUV;
 	outPosInLight = modelview * position;
 }

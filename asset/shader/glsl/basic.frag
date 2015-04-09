@@ -57,14 +57,16 @@ void main()
 
 	vec4 lightingColor = vec4(0.2f, 0.2f, 0.2f, 1.0f); // set default to global ambient
 
-	vec3 normal = normalize(outNormal.xyz);
-	//vec3 normal = texture2D(texNormal, outUV).rgb * 2.0f - 1.0f;
-	//normal = normalize(normal);
+	float maxVar = 2.0f;
+	float minVar = maxVar / 2.0f;
+	vec3 normal = outNormal.xyz;
+	normal = normal + normalize(texture2D(texNormal, outUV).rgb * maxVar - minVar);
+	normal = normalize(normal);
 	
 	//Calculate lighting color for light types
 	lightingColor += calcDirectionalLightColor(directionalLight, normal);
 	//lightingColor += calcSpotLightColor(spotLight, normal);
-	//lightingColor += calcAreaLightColor(areaLight, normal);
+	lightingColor += calcAreaLightColor(areaLight, normal);
 
 	outFrag = texDiffuse * lightingColor;
 }
@@ -84,7 +86,7 @@ vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal)
 
 		vec3 reflection = reflect(lightDir, normal);
 
-		float specularFactor = pow(max(0.0f, dot(normalize(viewvec.xyz), reflection)), 35.0f);
+		float specularFactor = pow(max(0.0f, dot(normalize(viewvec.xyz), reflection)), 10.0f);
 
 		specularColor = specMap * specularFactor;
 	}
@@ -97,7 +99,7 @@ vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal)
 {
 	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	finalColor = calcLightColor(light.base, light.base.direction, normal);
+	finalColor = calcLightColor(light.base, normalize(light.base.direction), normal);
 
 	return finalColor;
 }

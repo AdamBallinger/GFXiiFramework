@@ -208,7 +208,7 @@ void OGLWindow::Render()
 
 	skybox->SetPosition(*camera->GetCameraPosition());
 
-	angle += .5f;
+	angle += .3f;
 
 	// RENDER SKYBOX
 	m_skybox_shader->ActivateShaderProgram();
