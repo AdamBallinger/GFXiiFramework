@@ -40,6 +40,7 @@
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ShaderBase.h" />
+    <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="targetver.h" />
@@ -67,6 +68,7 @@
     <ClCompile Include="OpenGL\OGLWindow.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="quaternion.cpp" />
+    <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Terrain.cpp" />

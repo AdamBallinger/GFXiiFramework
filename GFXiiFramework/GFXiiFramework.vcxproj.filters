@@ -145,9 +145,6 @@
     <ClInclude Include="quaternion.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
-    <ClInclude Include="Terrain.h">
-      <Filter>Header Files\FlightSimulatorComponents</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
@@ -161,6 +158,12 @@
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
     <ClInclude Include="BaseLight.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapFBO.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
   </ItemGroup>
@@ -222,9 +225,6 @@
     <ClCompile Include="quaternion.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Terrain.cpp">
-      <Filter>Source Files\FlightSimulatorComponents</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
@@ -235,6 +235,12 @@
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
     <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMapFBO.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
   </ItemGroup>

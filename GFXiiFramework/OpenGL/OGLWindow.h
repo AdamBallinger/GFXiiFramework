@@ -10,11 +10,12 @@
 #include "OGLShader.h"
 #include "OGLTexture.h"
 #include "Skybox.h"
-#include "Terrain.h"
 #include "Camera.h"
+#include "Terrain.h"
 #include "DirectionalLight.h"
 #include "AreaLight.h"
 #include "SpotLight.h"
+#include "ShadowMapFBO.h"
 
 class OGLWindow : public RenderWindow
 {
@@ -31,6 +32,8 @@ class OGLWindow : public RenderWindow
 		OGLTexture		*m_texture;
 		OGLTexture		*m_specularTexture;
 		OGLTexture		*m_normalTexture;
+
+		ShadowMapFBO *shadowmapFBO;
 
 		Renderable* plane_mesh;
 		OGLTexture* plane_texture;
@@ -83,6 +86,7 @@ protected:
 		BOOL		InitWindow(HINSTANCE hInstance, int width, int height);
 
 		void		Render();
+		void		ShadowMapPass();
 		void		Resize( int width, int height );
 		void		DestroyRenderWindow();
 

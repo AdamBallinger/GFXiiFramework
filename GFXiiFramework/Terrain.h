@@ -2,19 +2,29 @@
 #define terrain_h
 
 #include "OpenGL\OGLTexture.h"
+#include "OpenGL\OGLMesh.h"
+
+#include <string>
 
 class Terrain
 {
 private:
 
-	OGLTexture* m_heightmap;
+	OGLMesh* mesh;
+
+	OGLTexture* diffuseTexture;
+	OGLTexture* specularTexture;
+	OGLTexture* normalTexture;
 
 public:
 
 	Terrain();
 	~Terrain();
 
-	void CreateTerrainFromHeightMap(const char*);
+	void SetMesh(LPCWSTR);
+	void SetDiffuseTex(std::string);
+	void SetSpecularTex(std::string);
+	void SetNormalTex(std::string);
 	void Render();
 
 };

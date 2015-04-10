@@ -10,8 +10,8 @@ in vec4 outNormal;	//input: normal
 in vec4 lightvec;	//input: light vector
 in vec4 viewvec;	//input: view vector
 in vec2 outUV;		//input: texcoords
+in vec4 vposition;
 in vec4 outPosInLight;	//input: position in light space
-in vec3 outTangent;
 
 layout (location = 0) out vec4 outFrag;
 
@@ -48,23 +48,22 @@ layout (location = 11) uniform SpotLight spotLight;
 layout (location = 17) uniform AreaLight areaLight;
 
 vec3 calcBumpedNormal();
-vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal);
+vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFactor);
 vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal);
 vec4 calcSpotLightColor(SpotLight light, vec3 normal);
 vec4 calcAreaLightColor(AreaLight light, vec3 normal);
 
+float calcShadoFactor(vec4 lightSpacePosition);
+
 void main()
 {
 	vec4 texDiffuse = texture(texColour, outUV);
+	float depth = texture(shadowmap, outUV).x;
+	depth = 1.0 - (1.0 - depth) * 25.0;
 
-	vec4 lightingColor = vec4(0.1f, 0.1f, 0.1f, 1.0f); // set default to global ambient
-
-	float maxVar = 2.0f;
-	float minVar = maxVar / 2.0f;
+	vec4 lightingColor = vec4(0.2f, 0.2f, 0.2f, 1.0f); // set default lighting to global ambient
 
 	vec3 normal = calcBumpedNormal();
-	//normal = normal + normalize(texture2D(texNormal, outUV).rgb * maxVar - minVar);
-	//normal = normalize(normal);
 	
 	//Calculate lighting color for light types
 	lightingColor += calcDirectionalLightColor(directionalLight, normal);
@@ -73,6 +72,25 @@ void main()
 
 	outFrag = texDiffuse * lightingColor;
 	//outFrag = vec4(normal, 1.0f);
+	//outFrag = vec4(depth); 
+}
+
+float calcShadowFactor(vec4 lightSpacePosition)
+{
+	vec3 project = lightSpacePosition.xyz / lightSpacePosition.w;
+	vec2 uv;
+	uv.x = 0.5f * project.x + 0.5f;
+	uv.y = 0.5f * project.y + 0.5f;
+	float z = 0.5f * project.z + 0.5f;
+	float depth = texture(shadowmap, uv).x;
+	if(depth < (z + 0.00001f))
+	{
+		return 0.5f;
+	}
+	else
+	{
+		return 1.0f;
+	}
 }
 
 vec3 calcBumpedNormal()
@@ -92,7 +110,6 @@ vec3 calcBumpedNormal()
 	}
 
 	tangent = normalize(tangent);
-	//vec3 tangent = normalize(outTangent);
 	tangent = normalize(tangent - dot(tangent, normal) * normal);
 	vec3 bitangent = cross(tangent, normal);
 	vec3 bumpedNormal = texture(texNormal, outUV).xyz;
@@ -104,7 +121,7 @@ vec3 calcBumpedNormal()
 	return finalNormal;
 }
 
-vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal)
+vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFactor)
 {
 	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	vec4 diffuseColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -124,7 +141,7 @@ vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal)
 		specularColor = specMap * specularFactor;
 	}
 
-	finalColor = (diffuseColor + specularColor);
+	finalColor = (shadowFactor * (diffuseColor + specularColor));
 	return finalColor;
 }
 
@@ -132,7 +149,7 @@ vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal)
 {
 	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	finalColor = calcLightColor(light.base, light.base.direction, normal);
+	finalColor = calcLightColor(light.base, light.base.direction, normal, 1.0f);
 
 	return finalColor;
 }
@@ -160,11 +177,12 @@ vec4 calcAreaLightColor(AreaLight light, vec3 normal)
 {
 	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	vec4 surfaceToLight = outPosInLight - vec4(light.base.position, 0.0f);
+	vec4 surfaceToLight = vposition - vec4(light.base.position, 0.0f);
 	float lightDistance = length(surfaceToLight);
 	surfaceToLight = normalize(surfaceToLight);
+	float shadowFactor = calcShadowFactor(outPosInLight);
 
-	finalColor = calcLightColor(light.base, surfaceToLight.xyz, normal);
+	finalColor = calcLightColor(light.base, surfaceToLight.xyz, normal, shadowFactor);
 
 	float attenuation = (light.constantAttenuation) + (light.linearAttenuation * lightDistance) + (light.expAttenuation * pow(lightDistance, 2));
 

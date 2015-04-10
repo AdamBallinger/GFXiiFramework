@@ -21,6 +21,8 @@ OGLWindow::~OGLWindow()
 	delete skybox;
 	delete terrain;
 
+	delete shadowmapFBO;
+
 	delete directionalLight;
 	delete areaLight;
 	delete spotLight;
@@ -149,7 +151,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	directionalLight = new DirectionalLight();
 	directionalLight->SetDirection(glm::vec3(-1.0f, 0.0f, 0.0f));
 	directionalLight->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-	directionalLight->SetIntensity(0.5f);
+	directionalLight->SetIntensity(1.0f);
 
 	areaLight = new AreaLight();
 	areaLight->SetPosition(glm::vec3(10.0f, 0.0f, -10.0f));
@@ -167,11 +169,16 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	spotLight->SetExponent(0.3f);
 	spotLight->SetCutOff(15.0);
 
+	shadowmapFBO = new ShadowMapFBO();
+
 	skybox = new Skybox();
 	skybox->Init();
 
 	terrain = new Terrain();
-	terrain->CreateTerrainFromHeightMap("../asset/texture/terrain.tga");
+	terrain->SetMesh(L"../asset/models/terrain.obj");
+	terrain->SetDiffuseTex("../asset/texture/terrain_diffuse.tga");
+	terrain->SetSpecularTex("../asset/texture/terrain_spec.tga");
+	terrain->SetNormalTex("../asset/texture/terrain_normal.tga");
 	
 	m_mesh = new OGLMesh(L"../asset/models/house.obj");
 
@@ -195,9 +202,22 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	return TRUE;
 }
+
+void OGLWindow::ShadowMapPass()
+{
+	shadowmapFBO->BindForWriting();
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	m_mesh->Render();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 float angle = 0.0f;
 void OGLWindow::Render()
 {
+	ShadowMapPass();
+
 	Renderable* prenderable = static_cast<Renderable*>(m_mesh);
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -217,8 +237,18 @@ void OGLWindow::Render()
 	skybox->Render();
 	glEnable(GL_DEPTH_TEST);
 
-	// RENDER HOUSE
 	m_shader->ActivateShaderProgram();
+	shadowmapFBO->BindForReading(GL_TEXTURE4);
+
+	// RENDER TERRAIN
+	glLoadIdentity();
+	glScalef(3, 3, 3);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	SetUniforms();
+	terrain->Render();
+
+	// RENDER HOUSE
+	glLoadIdentity();
 	glTranslatef(20.0f, 0, -70.0f);
 	glScalef(10, 10, 10);
 	glRotatef(angle, 0, 1, 0);
@@ -254,6 +284,7 @@ void OGLWindow::Resize( int width, int height )
 {
 	float aspect_ratio = (float)width/(float)height;
 	camera->SetCameraAspectRatio(aspect_ratio);
+	shadowmapFBO->Init(width, height);
 
 	glViewport( 0, 0, width, height );
 	
@@ -354,31 +385,31 @@ void OGLWindow::HandleKeyDown()
 	if (GetAsyncKeyState(W))
 	{
 		//Dolly
-		camera->DollyCamera(1);
+		camera->DollyCamera(5);
 	}
 
 	if (GetAsyncKeyState(A))
 	{
 		//Strafe
-		camera->StrafeCamera(-1);
+		camera->StrafeCamera(-5);
 	}
 
 	if (GetAsyncKeyState(S))
 	{
 		//Dolly
-		camera->DollyCamera(-1);
+		camera->DollyCamera(-5);
 	}
 
 	if (GetAsyncKeyState(D))
 	{
 		//Strafe
-		camera->StrafeCamera(1);
+		camera->StrafeCamera(5);
 	}
 
 	if (GetAsyncKeyState(Z))
 	{
 		//Ped
-		camera->PedCamera(1);
+		camera->PedCamera(5);
 	}
 
 	if (GetAsyncKeyState(X))

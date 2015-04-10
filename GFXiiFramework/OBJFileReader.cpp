@@ -13,6 +13,7 @@ static int firstPassOBJRead(LPCWSTR filename, int* vertex_count, int* vert_norma
 
 	if (!pfile)
 	{
+		fprintf(stdout, "An error occured.\n");
 		//something has gone wrong when opening the file.
 		return 1;
 	}
@@ -64,6 +65,7 @@ static int secondPassOBJRead(LPCWSTR filename, int nVerts, int nNormals, int nTe
 
 	if (!pfile)
 	{
+		fprintf(stdout, "An error occured.\n");
 		//something has gone wrong when opening the file.
 		return 1;
 	}
@@ -129,6 +131,7 @@ static int secondPassOBJRead(LPCWSTR filename, int nVerts, int nNormals, int nTe
 			{
 				//something is seriously fucked. abort
 				//I don't want to handle them
+				fprintf(stdout, "An error occured. a bad one.\n");
 				break;
 			}
 			triangle_read += 1;
