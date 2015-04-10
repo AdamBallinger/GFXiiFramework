@@ -11,6 +11,7 @@ in vec4 lightvec;	//input: light vector
 in vec4 viewvec;	//input: view vector
 in vec2 outUV;		//input: texcoords
 in vec4 vposition;
+in vec4 eposition;
 in vec4 outPosInLight;	//input: position in light space
 
 layout (location = 0) out vec4 outFrag;
@@ -57,6 +58,7 @@ float calcShadoFactor(vec4 lightSpacePosition);
 
 void main()
 {
+	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	vec4 texDiffuse = texture(texColour, outUV);
 	float depth = texture(shadowmap, outUV).x;
 	depth = 1.0 - (1.0 - depth) * 25.0;
@@ -70,7 +72,8 @@ void main()
 	//lightingColor += calcSpotLightColor(spotLight, normal);
 	lightingColor += calcAreaLightColor(areaLight, normal);
 
-	outFrag = texDiffuse * lightingColor;
+	finalColor = texDiffuse * lightingColor;
+	outFrag = finalColor;
 	//outFrag = vec4(normal, 1.0f);
 	//outFrag = vec4(depth); 
 }

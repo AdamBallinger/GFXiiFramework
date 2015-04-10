@@ -139,7 +139,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	camera = new Camera();
 	camera->InitCamera();
-	camera->SetCameraPosition(&glm::vec3(0.0f, 20.0f, 0.0f));
+	camera->SetCameraPosition(&glm::vec3(0.0f, 820.0f, 10.0f));
 	camera->SetCameraAspectRatio((float)width / (float)height);
 	camera->SetCameraFOV(70);
 
@@ -154,7 +154,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	directionalLight->SetIntensity(1.0f);
 
 	areaLight = new AreaLight();
-	areaLight->SetPosition(glm::vec3(10.0f, 0.0f, -10.0f));
+	areaLight->SetPosition(glm::vec3(10.0f, 800.0f, -10.0f));
 	areaLight->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
 	areaLight->SetIntensity(0.7f);
 	areaLight->SetConstAtten(0.3f);
@@ -249,7 +249,7 @@ void OGLWindow::Render()
 
 	// RENDER HOUSE
 	glLoadIdentity();
-	glTranslatef(20.0f, 0, -70.0f);
+	glTranslatef(20.0f, 800.0f, -70.0f);
 	glScalef(10, 10, 10);
 	glRotatef(angle, 0, 1, 0);
 	SetUniforms();
@@ -322,33 +322,10 @@ void OGLWindow::InitOGLState()
 	m_skybox_shader->AttachAndCompileShaderFromFile(L"../asset/shader/glsl/skybox.vert", SHADER_VERTEX);
 	m_skybox_shader->AttachAndCompileShaderFromFile(L"../asset/shader/glsl/skybox.frag", SHADER_FRAGMENT);
 
-	m_shader->BindAttributeLocation( 0, "position" );
-	m_shader->BindAttributeLocation( 1, "inNormal" );
-	m_shader->BindAttributeLocation(2, "inUV");
-
-	m_skybox_shader->BindAttributeLocation(0, "position");
-	m_skybox_shader->BindAttributeLocation(1, "inNormal");
-	m_skybox_shader->BindAttributeLocation(2, "inUV");
-
-	glBindFragDataLocation(m_skybox_shader->GetProgramHandle(), 0, "outFrag");
-
-	glBindFragDataLocation( m_shader->GetProgramHandle(), 0, "outFrag" );
-
 	m_shader->BuildShaderProgram();
 	m_shader->ActivateShaderProgram();
 
 	m_skybox_shader->BuildShaderProgram();
-
-	glUniform1i( m_uniform_texture, 0 );
-	
-	//Create a texture sampler
-	glGenSamplers( 1, (GLuint*)(&m_texDefaultSampler) );
-	
-	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  
-	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
-	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_MIN_FILTER , GL_LINEAR);  
-	glSamplerParameteri(m_texDefaultSampler , GL_TEXTURE_MAG_FILTER , GL_LINEAR);
-
 }
 
 BOOL OGLWindow::MouseLBDown ( int x, int y )

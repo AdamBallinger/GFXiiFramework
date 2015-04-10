@@ -21,14 +21,14 @@ out vec4 outPosInLight;	//output: vertex position in light space
 
 void main()
 {	
-	gl_Position = projection * view  * model * modelview * vec4(position, 1.0f);
+	gl_Position = projection * view * modelview * vec4(position, 1.0f);
 	
-	vec3 viewDir = normalize(campos - position).xyz;
+	vec3 viewDir = normalize(campos - position);
 	viewvec = vec4(viewDir, 0.0f);
 	viewvec = normalize(viewvec);
 	outNormal = normalmatrix * inNormal; // Ensure normals are correct after transformations
 	outUV = inUV;
-	vposition = model * modelview * vec4(position, 1.0f);
-	outPosInLight = lightmatrix * vec4(position.xyz, 1.0f);
+	vposition = modelview * vec4(position, 1.0f);
+	outPosInLight = lightmatrix * vec4(position, 1.0f);
 
 }
