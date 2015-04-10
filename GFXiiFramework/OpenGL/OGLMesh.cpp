@@ -3,7 +3,7 @@
 #include "../Triangle.h"
 #include "../OBJFileReader.h"
 #include "OGLTexture.h"
-#include "GLEW/include/glew.h"
+#include "../GLEW/include/glew.h"
 
 OGLMesh::OGLMesh()
 {
@@ -28,14 +28,14 @@ void OGLMesh::Render()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texHandle);
 
-	if (m_norm != nullptr)
+	if (m_norm != NULL)
 	{
 		unsigned int normHandle = dynamic_cast<OGLTexture*>(m_norm)->m_syshandle;
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, normHandle);
 	}
 
-	if (m_spec != nullptr)
+	if (m_spec != NULL)
 	{
 		unsigned int specHandle = dynamic_cast<OGLTexture*>(m_spec)->m_syshandle;
 		glActiveTexture(GL_TEXTURE2);
@@ -47,6 +47,14 @@ void OGLMesh::Render()
 	glDrawArrays(GL_TRIANGLES, 0, m_numtriangles*3);
 
 	glBindVertexArray(0);
+
+	// Cleanup the currently binded textures for the model. Prevent overlapping textures on other models.
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, NULL);
 }
 
 void OGLMesh::LoadAndBuildMeshFromOBJFile(LPCWSTR filename)

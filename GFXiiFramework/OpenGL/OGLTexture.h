@@ -1,7 +1,7 @@
 #ifndef __TEXTUREGL_H__
 #define __TEXTUREGL_H__
 
-#include "BaseTexture.h"
+#include "../BaseTexture.h"
 
 class OGLTexture : public BaseTexture
 {

@@ -1,7 +1,7 @@
 #include "OGLCube.h"
 
 #include <windows.h>
-#include "GLEW/include/glew.h"
+#include "../GLEW/include/glew.h"
 
 OGLCube::OGLCube()
 {

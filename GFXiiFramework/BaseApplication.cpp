@@ -1,6 +1,5 @@
 #include "BaseApplication.h"
 #include "OpenGL/OGLWindow.h"
-#include "D3D11/D3D11Window.h"
 #include "Resource.h"
 #include <Windowsx.h>
 
@@ -76,8 +75,8 @@ void BaseApplication::CreateApplicationWindow( int width, int height, ERenderSys
 	{
 		if (type == RenderSystemD3D11)
 		{
-			m_appwnd = new D3D11Window();
-			m_appwnd->InitWindow(m_hInst, width, height);
+			/*m_appwnd = new D3D11Window();
+			m_appwnd->InitWindow(m_hInst, width, height);*/
 		}
 		else if (type == RenderSystemOGL)
 		{

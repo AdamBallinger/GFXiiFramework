@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Renderable.h"
-#include "Listener.h"
+#include "../Renderable.h"
+#include "../Listener.h"
 #include "OGLTexture.h"
 
 class OGLCube : public Renderable

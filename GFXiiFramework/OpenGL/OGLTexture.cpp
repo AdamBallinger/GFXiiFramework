@@ -4,7 +4,7 @@
 #include <GL/gl.h>
 
 #include "OGLTexture.h"
-#include "ImageIO.h"
+#include "../ImageIO.h"
 
 OGLTexture::OGLTexture()
 {

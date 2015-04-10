@@ -1,7 +1,7 @@
 #ifndef __SHADERGL_H__
 #define __SHADERGL_H__
 #include <Windows.h>
-#include "ShaderBase.h"
+#include "../ShaderBase.h"
 
 class OGLShader : public ShaderBase
 {

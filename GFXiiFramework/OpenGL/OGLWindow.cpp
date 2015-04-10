@@ -1,6 +1,6 @@
 #include "OGLWindow.h"
-#include "Resource.h"
-#include "GLEW/include/glew.h"
+#include "../Resource.h"
+#include "../GLEW/include/glew.h"
 
 #include <Windows.h>
 #include <iostream>
@@ -12,15 +12,16 @@ OGLWindow::OGLWindow()
 
 OGLWindow::~OGLWindow()
 {
-	//Clean up the renderable
-	delete m_mesh;
 	delete plane_mesh;
+	
+	delete house;
+
 	delete m_shader;
 	delete m_skybox_shader;
+
 	delete camera;
 	delete skybox;
 	delete terrain;
-
 	delete shadowmapFBO;
 
 	delete directionalLight;
@@ -156,18 +157,18 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	areaLight = new AreaLight();
 	areaLight->SetPosition(glm::vec3(10.0f, 800.0f, -10.0f));
 	areaLight->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
-	areaLight->SetIntensity(0.7f);
-	areaLight->SetConstAtten(0.3f);
-	areaLight->SetLinearAtten(0.007f);
-	areaLight->SetExpAtten(0.0008f);
+	areaLight->SetIntensity(1.0f);
+	//areaLight->SetConstAtten(0.1f);
+	areaLight->SetLinearAtten(0.06f);
+	//areaLight->SetExpAtten(0.0f);
 
 	spotLight = new SpotLight();
-	spotLight->SetPosition(glm::vec3(20.0f, 3.0f, -70.0f));
+	spotLight->SetPosition(glm::vec3(10.0f, 800.0f, -60.0f));
 	spotLight->SetColor(glm::vec3(0.0f, 0.0f, 1.0f));
 	spotLight->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
 	spotLight->SetIntensity(1.5f);
-	spotLight->SetExponent(0.3f);
-	spotLight->SetCutOff(15.0);
+	spotLight->SetExponent(0.08f);
+	spotLight->SetCutOff(90.0);
 
 	shadowmapFBO = new ShadowMapFBO();
 
@@ -179,26 +180,28 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	terrain->SetDiffuseTex("../asset/texture/terrain_diffuse.tga");
 	terrain->SetSpecularTex("../asset/texture/terrain_spec.tga");
 	terrain->SetNormalTex("../asset/texture/terrain_normal.tga");
-	
-	m_mesh = new OGLMesh(L"../asset/models/house.obj");
 
-	m_texture = new OGLTexture();
-	m_texture->CreateTextureFromFile( "../asset/texture/house_diffuse.tga");
-	m_mesh->SetTexture( m_texture );
-	
-	m_specularTexture = new OGLTexture();
-	m_specularTexture->CreateTextureFromFile("../asset/texture/house_spec.tga");
-	m_mesh->SetSpecTexture(m_specularTexture);
+	house = new WorldStructure(L"../asset/models/house.obj");
+	house->SetDiffuseTexture("../asset/texture/house_diffuse.tga");
+	house->SetSpecularTexture("../asset/texture/house_spec.tga");
+	house->SetNormalTexture("../asset/texture/house_normal.tga");
 
-	m_normalTexture = new OGLTexture();
-	m_normalTexture->CreateTextureFromFile("../asset/texture/house_normal.tga");
-	m_mesh->SetNormalTexture(m_normalTexture);
+	house->Translate(glm::vec3(20.0f, 800.0f, -70.0f));
+	house->Scale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	plane_mesh = new OGLMesh(L"../asset/models/space_frigate.obj");
+	plane_mesh = new OGLMesh(L"../asset/models/plane.obj");
 	plane_texture = new OGLTexture();
-	plane_texture->CreateTextureFromFile("../asset/texture/tiles_colour.tga");
+	plane_texture->CreateTextureFromFile("../asset/texture/plane_diffuse.tga");
+
+	plane_normal = new OGLTexture();
+	plane_normal->CreateTextureFromFile("../asset/texture/plane_normal.tga");
+
+	plane_specular = new OGLTexture();
+	plane_specular->CreateTextureFromFile("../asset/texture/plane_specular.tga");
 
 	plane_mesh->SetTexture(plane_texture);
+	plane_mesh->SetNormalTexture(plane_normal);
+	plane_mesh->SetSpecTexture(plane_specular);
 
 	return TRUE;
 }
@@ -208,7 +211,9 @@ void OGLWindow::ShadowMapPass()
 	shadowmapFBO->BindForWriting();
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	m_mesh->Render();
+	//house_mesh->Render();
+	plane_mesh->Render();
+
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -216,9 +221,7 @@ void OGLWindow::ShadowMapPass()
 float angle = 0.0f;
 void OGLWindow::Render()
 {
-	ShadowMapPass();
-
-	Renderable* prenderable = static_cast<Renderable*>(m_mesh);
+	//ShadowMapPass();
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -241,19 +244,25 @@ void OGLWindow::Render()
 	shadowmapFBO->BindForReading(GL_TEXTURE4);
 
 	// RENDER TERRAIN
-	glLoadIdentity();
-	glScalef(3, 3, 3);
-	glTranslatef(0.0f, 0.0f, 0.0f);
+	transformation = glm::mat4(1.0f);
+	transformation = glm::translate(transformation, glm::vec3(0.0f, 0.0f, 0.0f));
+	transformation = glm::scale(transformation, glm::vec3(3.0f, 3.0f, 3.0f));
 	SetUniforms();
 	terrain->Render();
 
 	// RENDER HOUSE
-	glLoadIdentity();
-	glTranslatef(20.0f, 800.0f, -70.0f);
-	glScalef(10, 10, 10);
-	glRotatef(angle, 0, 1, 0);
+	house->Rotate(0.3f, glm::vec3(0.0f, 1.0f, 0.0f));
+	transformation = house->GetTransformationMatrix();
 	SetUniforms();
-	prenderable->Render();
+	house->Render();
+
+	// RENDER PLANE
+	transformation = glm::mat4(1.0f);
+	transformation = glm::translate(transformation, glm::vec3(70.0f, 800.0f, 50.0f));
+	transformation = glm::scale(transformation, glm::vec3(0.03f, 0.03f, 0.03f));
+	transformation = glm::rotate(transformation, glm::radians(-angle), glm::vec3(1.0f, 1.0f, 1.0f));
+	SetUniforms();
+	plane_mesh->Render();
 
 	// Get and store current cursor position
 	POINT cursorPos;
@@ -284,7 +293,7 @@ void OGLWindow::Resize( int width, int height )
 {
 	float aspect_ratio = (float)width/(float)height;
 	camera->SetCameraAspectRatio(aspect_ratio);
-	shadowmapFBO->Init(width, height);
+	//shadowmapFBO->Init(width, height);
 
 	glViewport( 0, 0, width, height );
 	
@@ -412,6 +421,11 @@ void OGLWindow::HandleKeyDown()
 		// Close Application
 		ExitProcess(0);
 	}
+
+	if (GetAsyncKeyState(VK_ADD))
+		linearAtten += 0.00025f;
+	if (GetAsyncKeyState(VK_SUBTRACT))
+		linearAtten -= 0.00025f;
 }
 
 void OGLWindow::SetUniforms()
@@ -423,7 +437,7 @@ void OGLWindow::SetUniforms()
 	glUniformMatrix4fv(0, 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(1, 1, GL_FALSE, &projection[0][0]);
 	glUniformMatrix4fv(3, 1, GL_FALSE, &model[0][0]);
-	glUniformMatrix4fv(4, 1, GL_FALSE, modelview);
+	glUniformMatrix4fv(4, 1, GL_FALSE, &transformation[0][0]);
 	glUniformMatrix4fv(5, 1, GL_FALSE, &normal[0][0]);
 
 	// Vector uniforms
@@ -443,32 +457,28 @@ void OGLWindow::SetUniforms()
 	glUniform3f(19, areaCol[0], areaCol[1], areaCol[2]);
 	glUniform1f(20, areaLight->GetIntensity());
 	glUniform1f(21, areaLight->GetConstAtten());
-	glUniform1f(22, areaLight->GetLinearAtten());
+//	glUniform1f(22, areaLight->GetLinearAtten());
+	glUniform1f(22, linearAtten);
 	glUniform1f(23, areaLight->GetExpAtten());
 
 	//glm::vec3 spotPos = spotLight->GetPosition();
 	//glm::vec3 spotCol = spotLight->GetColor();
 	//glm::vec3 spotDir = spotLight->GetDirection();
-	//glUniform3f(10, spotPos[0], spotPos[1], spotPos[2]);
-	//glUniform3f(11, spotCol[0], spotCol[1], spotCol[2]);
+	//glUniform3f(11, spotPos[0], spotPos[1], spotPos[2]);
 	//glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
-	//glUniform1f(13, spotLight->GetIntensity());
-	//glUniform1f(14, spotLight->GetExponent());
-	//glUniform1f(15, spotLight->GetCutOff());
+	//glUniform3f(13, spotCol[0], spotCol[1], spotCol[2]);
+	//glUniform1f(14, spotLight->GetIntensity());
+	//glUniform1f(15, spotLight->GetExponent());
+	//glUniform1f(16, spotLight->GetCutOff());
 }
 
 
 void OGLWindow::BuildMatrices()
 {
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
-
 	projection = camera->GetProjectionMatrix();
 	view = *camera->GetViewMatrix();
 	model = glm::mat4(1.0f);
-	normal = glm::inverseTranspose(glm::make_mat4(modelview));
-
-	// Create ModelViewProjection matrix
-	MVP = projection * view * model;
+	normal = glm::inverseTranspose(transformation);
 }
 
 void OGLWindow::SetVSync(bool sync)

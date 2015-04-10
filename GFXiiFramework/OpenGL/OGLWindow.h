@@ -1,22 +1,24 @@
 #pragma once
 
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_inverse.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "../glm/gtx/transform.hpp"
+#include "../glm/gtc/type_ptr.hpp"
+#include "../glm/gtc/matrix_inverse.hpp"
 
-#include "RenderWindow.h"
+#include "../RenderWindow.h"
 #include "OGLCube.h"
 #include "OGLMesh.h"
 #include "OGLShader.h"
 #include "OGLTexture.h"
-#include "Skybox.h"
-#include "Camera.h"
-#include "Terrain.h"
-#include "DirectionalLight.h"
-#include "AreaLight.h"
-#include "SpotLight.h"
-#include "ShadowMapFBO.h"
+
+#include "../Skybox.h"
+#include "../Camera.h"
+#include "../Terrain.h"
+#include "../DirectionalLight.h"
+#include "../AreaLight.h"
+#include "../SpotLight.h"
+#include "../ShadowMapFBO.h"
+
+#include "../WorldStructure.h"
 
 class OGLWindow : public RenderWindow
 {
@@ -27,17 +29,19 @@ class OGLWindow : public RenderWindow
 
 		int			m_width;
 		int			m_height;
-		
-		//This is not an ideal place to hold geometry data
-		Renderable		*m_mesh;
-		OGLTexture		*m_texture;
-		OGLTexture		*m_specularTexture;
-		OGLTexture		*m_normalTexture;
+
+		float linearAtten = 0.05f;
+
+		WorldStructure* house;
 
 		ShadowMapFBO *shadowmapFBO;
 
+		//TODO: move plane mesh into player class
 		Renderable* plane_mesh;
 		OGLTexture* plane_texture;
+		OGLTexture* plane_normal;
+		OGLTexture* plane_specular;
+
 		Camera* camera;
 		Skybox* skybox;
 		Terrain* terrain;
@@ -47,13 +51,13 @@ class OGLWindow : public RenderWindow
 		AreaLight* areaLight;
 		SpotLight* spotLight;
 
-		// Store tge ModelViewProjection matrix
-		glm::mat4 MVP;
+		// Matrices
 		glm::mat4 projection;
 		glm::mat4 view;
 		glm::mat4 model;
 		glm::mat4 normal;
-		float modelview[16];
+		//float modelview[16];
+		glm::mat4 transformation;
 
 		//Declear an OGL shader program
 		OGLShaderProgram		*m_shader;

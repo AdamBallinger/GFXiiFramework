@@ -1,34 +1,34 @@
 #pragma once
 
-#include "BaseTexture.h"
+#include "OpenGL\OGLTexture.h"
 
 //This is an abstract class
 //It cannot be instantiated without being inherited by a concrete class
 class Renderable
 {
 	protected:
-		BaseTexture				*m_tex;
-		BaseTexture				*m_spec;
-		BaseTexture				*m_norm;
+		OGLTexture				*m_tex;
+		OGLTexture				*m_spec;
+		OGLTexture				*m_norm;
 
 	public:
 
 		//this is a pure virtual function
-								Renderable() { m_tex = 0; }
+		Renderable() { m_tex = 0; m_norm = 0; m_spec = 0; }
 		virtual void			Render() = 0;
 		
-		inline void				SetTexture( BaseTexture* tex )
+		inline void				SetTexture(OGLTexture* tex)
 		{
 			m_tex = tex;
 		}
 
-		inline void				SetSpecTexture(BaseTexture* tex)
+		inline void				SetSpecTexture(OGLTexture* _spec)
 		{
-			m_spec = tex;
+			m_spec = _spec;
 		}
 
-		inline void				SetNormalTexture(BaseTexture* tex)
+		inline void				SetNormalTexture(OGLTexture* _norm)
 		{
-			m_norm = tex;
+			m_norm = _norm;
 		}
 };

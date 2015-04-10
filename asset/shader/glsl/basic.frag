@@ -63,14 +63,14 @@ void main()
 	float depth = texture(shadowmap, outUV).x;
 	depth = 1.0 - (1.0 - depth) * 25.0;
 
-	vec4 lightingColor = vec4(0.2f, 0.2f, 0.2f, 1.0f); // set default lighting to global ambient
+	vec4 lightingColor = vec4(0.3f, 0.3f, 0.3f, 1.0f); // set default lighting to global ambient
 
 	vec3 normal = calcBumpedNormal();
 	
 	//Calculate lighting color for light types
 	lightingColor += calcDirectionalLightColor(directionalLight, normal);
-	//lightingColor += calcSpotLightColor(spotLight, normal);
 	lightingColor += calcAreaLightColor(areaLight, normal);
+	//lightingColor += calcSpotLightColor(spotLight, normal);  BROKEN
 
 	finalColor = texDiffuse * lightingColor;
 	outFrag = finalColor;
@@ -131,7 +131,7 @@ vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFac
 	vec4 specularColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	vec4 specMap = texture(texSpec, outUV);
 
-	float diffuseFactor = max(0.0f, dot(-lightDir, normal));
+	float diffuseFactor = max(0.0f, dot(normal, -lightDir));
 
 	if(diffuseFactor > 0.0f)
 	{
@@ -161,14 +161,14 @@ vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal)
 //{
 //	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-//	vec4 surfaceToLight = normalize(vec4(light.base.position, 0.0f) - outPosInLight);
-//	float angle = acos(dot(-surfaceToLight, normalize(vec4(light.base.direction, 0.0f))));
+//	vec4 surfaceToLight = normalize(-vposition - vec4(light.base.position, 1.0f));
 //	float cutOff = radians(clamp(light.cutOff, 0.0f, 90.0));
+//	float angle = dot(surfaceToLight, vec4(light.base.direction, 0.0f));
 	
-//	if(angle < cutOff)
+//	if(angle > light.cutOff)
 //	{
 //		finalColor = vec4(light.base.color, 1.0f);
-//		return finalColor * light.base.intensity;
+//		return finalColor;
 //	}
 //	else
 //	{

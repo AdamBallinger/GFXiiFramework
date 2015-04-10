@@ -1,7 +1,7 @@
 #ifndef spotlight_h
 #define spotlight_h
 
-#include <glm\glm.hpp>
+#include "glm\glm.hpp"
 #include "BaseLight.h"
 
 class SpotLight : public BaseLight

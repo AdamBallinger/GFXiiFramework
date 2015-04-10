@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "GLEW/include/glew.h"
+#include "../GLEW/include/glew.h"
 
 #include "OGLShader.h"
 

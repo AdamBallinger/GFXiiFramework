@@ -13,8 +13,8 @@
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "glu32.lib")
 #pragma comment (lib, "glew32.lib")
-#pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dcompiler.lib")
+//#pragma comment (lib, "d3d11.lib")
+//#pragma comment (lib, "d3dcompiler.lib")
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,

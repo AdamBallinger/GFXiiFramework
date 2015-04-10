@@ -16,11 +16,6 @@
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="BaseTexture.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="D3D11\D3D11Cube.h" />
-    <ClInclude Include="D3D11\D3D11Mesh.h" />
-    <ClInclude Include="D3D11\D3D11Shader.h" />
-    <ClInclude Include="D3D11\D3D11Texture.h" />
-    <ClInclude Include="D3D11\D3D11Window.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GFXiiFramework.h" />
     <ClInclude Include="GLEW\include\glew.h" />
@@ -47,16 +42,12 @@
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="WorldStructure.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="D3D11\D3D11Cube.cpp" />
-    <ClCompile Include="D3D11\D3D11Mesh.cpp" />
-    <ClCompile Include="D3D11\D3D11Shader.cpp" />
-    <ClCompile Include="D3D11\D3D11Texture.cpp" />
-    <ClCompile Include="D3D11\D3D11Window.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GFXiiFramework.cpp" />
     <ClCompile Include="ImageIO.cpp" />
@@ -74,6 +65,7 @@
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="WorldStructure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GFXiiFramework.ico" />
@@ -88,15 +80,6 @@
     <None Include="..\asset\shader\glsl\skybox.frag" />
     <None Include="..\asset\shader\glsl\skybox.vert" />
     <None Include="GLEW\glew32.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\asset\shader\hlsl\basic_fs.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="..\asset\shader\hlsl\basic_vs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="GLEW\lib\glew32.lib" />

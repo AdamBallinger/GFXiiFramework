@@ -1,7 +1,7 @@
 #ifndef arealight_h
 #define arealight_h
 
-#include <glm\glm.hpp>
+#include "glm\glm.hpp"
 #include "BaseLight.h"
 
 class AreaLight : public BaseLight

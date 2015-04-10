@@ -13,17 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\D3D11">
-      <UniqueIdentifier>{622609f6-a0ac-4d67-a640-45c68363299c}</UniqueIdentifier>
-      <Extensions>D3D11</Extensions>
-    </Filter>
     <Filter Include="Header Files\OpenGL">
       <UniqueIdentifier>{853a6d3b-e5ad-478c-b4b1-947af7506795}</UniqueIdentifier>
       <Extensions>*OGL*</Extensions>
-    </Filter>
-    <Filter Include="Source Files\D3D11">
-      <UniqueIdentifier>{07c0a50f-6dcc-4aad-8bc4-68ea37f1d05c}</UniqueIdentifier>
-      <Extensions>D3D11</Extensions>
     </Filter>
     <Filter Include="Source Files\OpenGL">
       <UniqueIdentifier>{73bc5da8-15ce-4507-8639-14771fcdf5db}</UniqueIdentifier>
@@ -37,9 +29,6 @@
     </Filter>
     <Filter Include="Asset\Shaders\GLSL">
       <UniqueIdentifier>{93050cfa-8438-454d-9fb3-8caf6546a87c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Asset\Shaders\HLSL">
-      <UniqueIdentifier>{92f9ec45-9dbb-48af-813d-d214fae79351}</UniqueIdentifier>
     </Filter>
     <Filter Include="GLEW">
       <UniqueIdentifier>{5f363ded-54ad-4a95-b466-a289b2288a34}</UniqueIdentifier>
@@ -58,18 +47,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D3D11\D3D11Cube.h">
-      <Filter>Header Files\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\D3D11Shader.h">
-      <Filter>Header Files\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\D3D11Texture.h">
-      <Filter>Header Files\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\D3D11Window.h">
-      <Filter>Header Files\D3D11</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGL\OGLWindow.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
@@ -90,9 +67,6 @@
     </ClInclude>
     <ClInclude Include="GLEW\include\wglew.h">
       <Filter>GLEW</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11\D3D11Mesh.h">
-      <Filter>Header Files\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="OpenGL\OGLMesh.h">
       <Filter>Header Files\OpenGL</Filter>
@@ -166,20 +140,11 @@
     <ClInclude Include="Terrain.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
+    <ClInclude Include="WorldStructure.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D3D11\D3D11Cube.cpp">
-      <Filter>Source Files\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11Shader.cpp">
-      <Filter>Source Files\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11Texture.cpp">
-      <Filter>Source Files\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11Window.cpp">
-      <Filter>Source Files\D3D11</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGL\OGLWindow.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
@@ -191,9 +156,6 @@
     </ClCompile>
     <ClCompile Include="OpenGL\OGLTexture.cpp">
       <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11Mesh.cpp">
-      <Filter>Source Files\D3D11</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\OGLMesh.cpp">
       <Filter>Source Files\OpenGL</Filter>
@@ -243,6 +205,9 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
+    <ClCompile Include="WorldStructure.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GFXiiFramework.ico">
@@ -273,14 +238,6 @@
     <None Include="..\asset\shader\glsl\skybox.vert">
       <Filter>Asset\Shaders\GLSL</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\asset\shader\hlsl\basic_fs.hlsl">
-      <Filter>Asset\Shaders\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\asset\shader\hlsl\basic_vs.hlsl">
-      <Filter>Asset\Shaders\HLSL</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="GLEW\lib\glew32.lib">
