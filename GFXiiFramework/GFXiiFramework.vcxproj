@@ -30,7 +30,6 @@
     <ClInclude Include="OpenGL\OGLTexture.h" />
     <ClInclude Include="OpenGL\OGLWindow.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="quaternion.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Resource.h" />
@@ -58,7 +57,6 @@
     <ClCompile Include="OpenGL\OGLTexture.cpp" />
     <ClCompile Include="OpenGL\OGLWindow.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="quaternion.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SpotLight.cpp" />

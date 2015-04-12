@@ -116,9 +116,6 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
-    <ClInclude Include="quaternion.h">
-      <Filter>Header Files\FlightSimulatorComponents</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
@@ -182,9 +179,6 @@
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\FlightSimulatorComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="quaternion.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">

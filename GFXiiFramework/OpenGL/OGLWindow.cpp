@@ -12,9 +12,11 @@ OGLWindow::OGLWindow()
 
 OGLWindow::~OGLWindow()
 {
-	delete plane_mesh;
-	
 	delete house;
+	delete house_med;
+	delete super_secret;
+
+	delete player;
 
 	delete m_shader;
 	delete m_skybox_shader;
@@ -155,18 +157,18 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	directionalLight->SetIntensity(1.0f);
 
 	areaLight = new AreaLight();
-	areaLight->SetPosition(glm::vec3(10.0f, 800.0f, -10.0f));
-	areaLight->SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	areaLight->SetPosition(glm::vec3(325.0f, 680.0f, -240.0f));
+	areaLight->SetColor(glm::vec3(0.0f, 1.0f, 1.0f));
 	areaLight->SetIntensity(1.0f);
 	//areaLight->SetConstAtten(0.1f);
 	areaLight->SetLinearAtten(0.06f);
 	//areaLight->SetExpAtten(0.0f);
 
 	spotLight = new SpotLight();
-	spotLight->SetPosition(glm::vec3(10.0f, 800.0f, -60.0f));
+	spotLight->SetPosition(glm::vec3(10.0f, 800.0f, -20.0f));
 	spotLight->SetColor(glm::vec3(0.0f, 0.0f, 1.0f));
-	spotLight->SetDirection(glm::vec3(0.0f, 0.0f, 1.0f));
-	spotLight->SetIntensity(1.5f);
+	spotLight->SetDirection(glm::vec3(1.0f, 0.0f, 0.0f));
+	spotLight->SetIntensity(1.0f);
 	spotLight->SetExponent(0.08f);
 	spotLight->SetCutOff(90.0);
 
@@ -186,22 +188,34 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	house->SetSpecularTexture("../asset/texture/house_spec.tga");
 	house->SetNormalTexture("../asset/texture/house_normal.tga");
 
-	house->Translate(glm::vec3(20.0f, 800.0f, -70.0f));
-	house->Scale(glm::vec3(10.0f, 10.0f, 10.0f));
+	house->Translate(glm::vec3(400.0f, 650.0f, -350.0f));
+	house->Scale(glm::vec3(20.0f, 20.0f, 20.0f));
+	house->Rotate(45, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	plane_mesh = new OGLMesh(L"../asset/models/plane.obj");
-	plane_texture = new OGLTexture();
-	plane_texture->CreateTextureFromFile("../asset/texture/plane_diffuse.tga");
+	house_med = new WorldStructure(L"../asset/models/house_med.obj");
+	house_med->SetDiffuseTexture("../asset/texture/house_med_diffuse.tga");
+	house_med->SetSpecularTexture("../asset/texture/house_med_spec.tga");
+	house_med->SetNormalTexture("../asset/texture/house_med_normal.tga");
 
-	plane_normal = new OGLTexture();
-	plane_normal->CreateTextureFromFile("../asset/texture/plane_normal.tga");
+	house_med->Translate(glm::vec3(-350.0f, 610.0f, -880.0f));
+	house_med->Scale(glm::vec3(0.5f, 0.5f, 0.5f));
+	house_med->Rotate(-45, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	plane_specular = new OGLTexture();
-	plane_specular->CreateTextureFromFile("../asset/texture/plane_specular.tga");
+	super_secret = new WorldStructure(L"../asset/models/secret.obj");
+	super_secret->SetDiffuseTexture("../asset/texture/secret_diffuse.tga");
 
-	plane_mesh->SetTexture(plane_texture);
-	plane_mesh->SetNormalTexture(plane_normal);
-	plane_mesh->SetSpecTexture(plane_specular);
+	super_secret->Translate(glm::vec3(30.0f, 600.0f, -80.0f));
+	super_secret->Scale(glm::vec3(5.0f, 5.0f, 5.0f));
+	//super_secret->Rotate(40.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	super_secret->Rotate(-20.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+
+	player = new Player(L"../asset/models/plane.obj");
+	player->GetModel()->SetDiffuseTexture("../asset/texture/plane_diffuse.tga");
+	player->GetModel()->SetSpecularTexture("../asset/texture/plane_specular.tga");
+	player->GetModel()->SetNormalTexture("../asset/texture/plane_normal.tga");
+
+	player->GetModel()->Translate(glm::vec3(70.0f, 800.0f, 50.0f));
+	player->GetModel()->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
 
 	return TRUE;
 }
@@ -211,8 +225,8 @@ void OGLWindow::ShadowMapPass()
 	shadowmapFBO->BindForWriting();
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	//house_mesh->Render();
-	plane_mesh->Render();
+	house->Render();
+	player->GetModel()->Render();
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -250,19 +264,27 @@ void OGLWindow::Render()
 	SetUniforms();
 	terrain->Render();
 
-	// RENDER HOUSE
-	house->Rotate(0.3f, glm::vec3(0.0f, 1.0f, 0.0f));
+	// RENDER HOUSES
+	//house->Rotate(0.3f, glm::vec3(0.0f, 1.0f, 0.0f));
 	transformation = house->GetTransformationMatrix();
 	SetUniforms();
 	house->Render();
 
-	// RENDER PLANE
-	transformation = glm::mat4(1.0f);
-	transformation = glm::translate(transformation, glm::vec3(70.0f, 800.0f, 50.0f));
-	transformation = glm::scale(transformation, glm::vec3(0.03f, 0.03f, 0.03f));
-	transformation = glm::rotate(transformation, glm::radians(-angle), glm::vec3(1.0f, 1.0f, 1.0f));
+	transformation = house_med->GetTransformationMatrix();
 	SetUniforms();
-	plane_mesh->Render();
+	house_med->Render();
+
+	// RENDER THE SUPER SECRET MODEL
+	transformation = super_secret->GetTransformationMatrix();
+	SetUniforms();
+	super_secret->Render();
+
+	// RENDER PLANE
+	//player->GetModel()->Rotate(-0.5, glm::vec3(1.0f, 1.0f, 1.0f));
+	transformation = player->GetModel()->GetTransformationMatrix();
+	SetUniforms();
+	player->GetModel()->Render();
+
 
 	// Get and store current cursor position
 	POINT cursorPos;
@@ -271,7 +293,7 @@ void OGLWindow::Render()
 	int mY = cursorPos.y;
 	int xDiff = (m_width / 2) - mX;
 	int yDiff = (m_height / 2) - mY;
-	float camera_smoothing = 0.2f;
+	float camera_smoothing = 0.07f;
 
 	// Yaw and pitch the camera based on the difference the mouse travelled from the centre of the window.
 	if (abs(xDiff) > 0 || abs(yDiff) > 0)
@@ -316,7 +338,7 @@ void OGLWindow::InitOGLState()
 	glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	SetVSync(true);
 
 	//Initialise OGL shader
@@ -423,9 +445,9 @@ void OGLWindow::HandleKeyDown()
 	}
 
 	if (GetAsyncKeyState(VK_ADD))
-		linearAtten += 0.00025f;
+		linearAtten -= 0.00025f; // Increase arealight attenuation
 	if (GetAsyncKeyState(VK_SUBTRACT))
-		linearAtten -= 0.00025f;
+		linearAtten += 0.00025f; // decrease arealight attenuation
 }
 
 void OGLWindow::SetUniforms()
@@ -453,23 +475,33 @@ void OGLWindow::SetUniforms()
 
 	glm::vec3 areaPos = areaLight->GetPosition();
 	glm::vec3 areaCol = areaLight->GetColor();
-	glUniform3f(17, areaPos[0], areaPos[1], areaPos[2]);
-	glUniform3f(19, areaCol[0], areaCol[1], areaCol[2]);
-	glUniform1f(20, areaLight->GetIntensity());
-	glUniform1f(21, areaLight->GetConstAtten());
-//	glUniform1f(22, areaLight->GetLinearAtten());
-	glUniform1f(22, linearAtten);
-	glUniform1f(23, areaLight->GetExpAtten());
+	glUniform3f(20, areaPos[0], areaPos[1], areaPos[2]);
+	glUniform3f(22, areaCol[0], areaCol[1], areaCol[2]);
+	glUniform1f(23, areaLight->GetIntensity());
+	glUniform1f(24, areaLight->GetConstAtten());
+//	glUniform1f(25, areaLight->GetLinearAtten());
+	glUniform1f(25, linearAtten);
+	glUniform1f(26, areaLight->GetExpAtten());
 
-	//glm::vec3 spotPos = spotLight->GetPosition();
-	//glm::vec3 spotCol = spotLight->GetColor();
-	//glm::vec3 spotDir = spotLight->GetDirection();
+	glm::vec3 spotPos = spotLight->GetPosition();
+	glm::vec3 spotCol = spotLight->GetColor();
+	glm::vec3 spotDir = spotLight->GetDirection();
 	//glUniform3f(11, spotPos[0], spotPos[1], spotPos[2]);
 	//glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
 	//glUniform3f(13, spotCol[0], spotCol[1], spotCol[2]);
 	//glUniform1f(14, spotLight->GetIntensity());
 	//glUniform1f(15, spotLight->GetExponent());
 	//glUniform1f(16, spotLight->GetCutOff());
+	glUniform3f(11, spotPos[0], spotPos[1], spotPos[2]);
+	glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
+	glUniform3f(13, spotCol[0], spotCol[1], spotCol[2]);
+	glUniform1f(14, spotLight->GetIntensity());
+	glUniform1f(15, 35.0f);
+	glUniform1f(16, 25.0f);
+	glUniform1f(17, 1.0f);
+	glUniform1f(18, 0.09f);
+	glUniform1f(19, 0.032f);
+
 }
 
 

@@ -23,11 +23,11 @@ void main()
 {	
 	gl_Position = projection * view * transformation * vec4(position, 1.0f);
 	
-	vec3 viewDir = normalize(campos - position);
+	vposition = transformation * vec4(position, 1.0f);
+	vec3 viewDir = normalize(campos - vposition.xyz);
 	viewvec = vec4(viewDir, 0.0f);
 	viewvec = normalize(viewvec);
 	outNormal = normalmatrix * inNormal; // Ensure normals are correct after transformations
 	outUV = inUV;
-	vposition = transformation * vec4(position, 1.0f);
-	outPosInLight = lightmatrix * vec4(position, 1.0f);
+	outPosInLight = lightmatrix * vposition;
 }

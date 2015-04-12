@@ -32,8 +32,11 @@ struct DirectionalLight
 struct SpotLight
 {
 	BaseLight base;
-	float exponent;
 	float cutOff;
+	float outerCutOff;
+	float constantAtten;
+	float linearAtten;
+	float quadraticAtten;
 };
 
 struct AreaLight
@@ -46,7 +49,7 @@ struct AreaLight
 
 layout (location = 7) uniform DirectionalLight directionalLight;
 layout (location = 11) uniform SpotLight spotLight;
-layout (location = 17) uniform AreaLight areaLight;
+layout (location = 20) uniform AreaLight areaLight;
 
 vec3 calcBumpedNormal();
 vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFactor);
@@ -70,7 +73,7 @@ void main()
 	//Calculate lighting color for light types
 	lightingColor += calcDirectionalLightColor(directionalLight, normal);
 	lightingColor += calcAreaLightColor(areaLight, normal);
-	//lightingColor += calcSpotLightColor(spotLight, normal);  BROKEN
+	lightingColor += calcSpotLightColor(spotLight, normal); 
 
 	finalColor = texDiffuse * lightingColor;
 	outFrag = finalColor;
@@ -131,7 +134,7 @@ vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFac
 	vec4 specularColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	vec4 specMap = texture(texSpec, outUV);
 
-	float diffuseFactor = max(0.0f, dot(normal, -lightDir));
+	float diffuseFactor = clamp(max(0.0f, dot(normal, -lightDir)), 0.0f, 1.0f);
 
 	if(diffuseFactor > 0.0f)
 	{
@@ -139,7 +142,7 @@ vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFac
 
 		vec3 reflection = reflect(lightDir, normal);
 
-		float specularFactor = pow(max(0.0f, dot(viewvec.xyz, reflection)), 25.0f);
+		float specularFactor = clamp(pow(max(0.0f, dot(viewvec.xyz, reflection)), 30.0f), 0.0f, 1.0f);
 
 		specularColor = specMap * specularFactor;
 	}
@@ -157,24 +160,23 @@ vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal)
 	return finalColor;
 }
 
-//vec4 calcSpotLightColor(SpotLight light, vec3 normal)
-//{
-//	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+vec4 calcSpotLightColor(SpotLight light, vec3 normal)
+{
+	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-//	vec4 surfaceToLight = normalize(-vposition - vec4(light.base.position, 1.0f));
-//	float cutOff = radians(clamp(light.cutOff, 0.0f, 90.0));
-//	float angle = dot(surfaceToLight, vec4(light.base.direction, 0.0f));
-	
-//	if(angle > light.cutOff)
-//	{
-//		finalColor = vec4(light.base.color, 1.0f);
-//		return finalColor;
-//	}
-//	else
-//	{
-//		return finalColor;
-//	}
-//}
+	vec4 lightDir = normalize(vec4(light.base.position, 1.0f) - vposition);
+
+	finalColor = calcLightColor(light.base, light.base.direction, normal, 1.0f);
+
+	float dist = length(vec4(light.base.position, 1.0f) - vposition);
+	float attenuation = 1.0f / (light.constantAtten + light.linearAtten * dist + light.quadraticAtten * pow(dist, 2));
+
+	float theta = dot(lightDir.xyz, normalize(-light.base.direction));
+	float epsilon = light.cutOff - light.outerCutOff;
+	float fade = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
+	finalColor *= attenuation * fade;
+	return (finalColor);
+}
 
 vec4 calcAreaLightColor(AreaLight light, vec3 normal)
 {

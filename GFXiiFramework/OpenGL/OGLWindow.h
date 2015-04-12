@@ -19,6 +19,7 @@
 #include "../ShadowMapFBO.h"
 
 #include "../WorldStructure.h"
+#include "../Player.h"
 
 class OGLWindow : public RenderWindow
 {
@@ -33,14 +34,17 @@ class OGLWindow : public RenderWindow
 		float linearAtten = 0.05f;
 
 		WorldStructure* house;
+		WorldStructure* house_med;
+		WorldStructure* super_secret;
 
 		ShadowMapFBO *shadowmapFBO;
 
 		//TODO: move plane mesh into player class
-		Renderable* plane_mesh;
-		OGLTexture* plane_texture;
-		OGLTexture* plane_normal;
-		OGLTexture* plane_specular;
+		//Renderable* plane_mesh;
+		//OGLTexture* plane_texture;
+		//OGLTexture* plane_normal;
+		//OGLTexture* plane_specular;
+		Player* player;
 
 		Camera* camera;
 		Skybox* skybox;
