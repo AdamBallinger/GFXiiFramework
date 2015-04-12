@@ -1,21 +1,13 @@
 #include "Player.h"
 
-Player::Player()
+Player::Player(LPCWSTR _meshFile)
 {
-
+	playermodel = new WorldStructure(_meshFile);
+	viewmatrix = glm::mat4(1.0f);
+	forwardVec = glm::vec3(0.0f, 0.0f, 1.0f);
 }
 
-Player::~Player()
+WorldStructure* Player::GetModel()
 {
-
-}
-
-void Player::SetPosition(glm::vec3 _position)
-{
-	position = _position;
-}
-
-glm::vec3 Player::GetPosition()
-{
-	return position;
+	return playermodel;
 }

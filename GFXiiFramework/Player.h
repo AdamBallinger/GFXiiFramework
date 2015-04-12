@@ -1,21 +1,22 @@
 #ifndef player_h
 #define player_h
 
-#include "glm\glm.hpp"
+#include "WorldStructure.h"
 
 class Player 
 {
 private:
 
-	glm::vec3 position;
+	WorldStructure* playermodel;
+
+	glm::mat4 viewmatrix;
+	glm::vec3 forwardVec;
 
 public:
 
-	Player();
-	~Player();
+	Player(LPCWSTR);
 
-	void SetPosition(glm::vec3 _position);
-	glm::vec3 GetPosition();
+	WorldStructure* GetModel();
 
 };
 
