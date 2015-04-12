@@ -22,6 +22,11 @@ public:
 	WorldStructure(LPCWSTR);
 	~WorldStructure();
 
+	inline void LoadTransformationIdentity()
+	{
+		transformationMatrix = glm::mat4(1.0f);
+	}
+
 	inline glm::mat4 GetTransformationMatrix()
 	{
 		return transformationMatrix;
