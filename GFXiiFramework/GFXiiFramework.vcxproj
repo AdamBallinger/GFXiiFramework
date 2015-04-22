@@ -15,6 +15,7 @@
     <ClInclude Include="BaseApplication.h" />
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="BaseTexture.h" />
+    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GFXiiFramework.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="OpenGL\OGLTexture.h" />
     <ClInclude Include="OpenGL\OGLWindow.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RacingStructure.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Resource.h" />
@@ -46,6 +48,7 @@
   <ItemGroup>
     <ClCompile Include="AreaLight.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
+    <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GFXiiFramework.cpp" />
@@ -57,6 +60,7 @@
     <ClCompile Include="OpenGL\OGLTexture.cpp" />
     <ClCompile Include="OpenGL\OGLWindow.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RacingStructure.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SpotLight.cpp" />

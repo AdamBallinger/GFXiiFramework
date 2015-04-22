@@ -15,8 +15,11 @@ OGLWindow::~OGLWindow()
 	delete house;
 	delete house_med;
 	delete super_secret;
+	delete plane;
 
 	delete player;
+
+	delete raceRing;
 
 	delete m_shader;
 	delete m_skybox_shader;
@@ -143,13 +146,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	camera = new Camera();
 	camera->InitCamera();
 	camera->SetCameraPosition(&glm::vec3(0.0f, 820.0f, 10.0f));
-	camera->SetCameraAspectRatio((float)width / (float)height);
 	camera->SetCameraFOV(70);
-
-	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
-		0.1f, 5000.0f);
-
-	camera->SetProjectionMatrix(&cam_projection[0][0]);
 
 	directionalLight = new DirectionalLight();
 	directionalLight->SetDirection(glm::vec3(-1.0f, 0.0f, 0.0f));
@@ -206,36 +203,46 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 	super_secret->Translate(glm::vec3(30.0f, 600.0f, -80.0f));
 	super_secret->Scale(glm::vec3(5.0f, 5.0f, 5.0f));
-	//super_secret->Rotate(40.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	super_secret->Rotate(-20.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 
-	player = new Player(L"../asset/models/plane.obj");
-	player->GetModel()->SetDiffuseTexture("../asset/texture/plane_diffuse.tga");
-	player->GetModel()->SetSpecularTexture("../asset/texture/plane_specular.tga");
-	player->GetModel()->SetNormalTexture("../asset/texture/plane_normal.tga");
+	plane = new WorldStructure(L"../asset/models/plane.obj");
+	plane->SetDiffuseTexture("../asset/texture/plane_diffuse.tga");
+	plane->SetSpecularTexture("../asset/texture/plane_specular.tga");
+	plane->SetNormalTexture("../asset/texture/plane_normal.tga");
 
-	player->GetModel()->Translate(glm::vec3(70.0f, 800.0f, 50.0f));
-	player->GetModel()->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
+	plane->Translate(glm::vec3(400.0f, 950.0f, -350.0f));
+	plane->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
+
+	player = new Player(camera);
+
+	raceRing = new RacingStructure(L"../asset/models/ring.obj");
+	raceRing->SetDiffuseTexture("../asset/texture/ring_diffuse.tga");
+
+	CreateRacingRings();
 
 	return TRUE;
 }
 
 void OGLWindow::ShadowMapPass()
 {
-	shadowmapFBO->BindForWriting();
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	house->Render();
-	player->GetModel()->Render();
-
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
 }
 
-float angle = 0.0f;
+void OGLWindow::CheckCollisions()
+{
+	if (raceRing->GetCollider().CollidesWith(player->GetCollider()))
+	{
+		player->SetCurrentRing(player->GetCurrentRing() + 1);
+		if (player->GetCurrentRing() > racePointTransforms.size() - 1)
+		{
+			player->SetCurrentRing(0);
+		}
+	}
+}
+
 void OGLWindow::Render()
 {
-	//ShadowMapPass();
+	ShadowMapPass();
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -244,8 +251,6 @@ void OGLWindow::Render()
 	glBindSampler(0, m_texDefaultSampler);
 
 	skybox->SetPosition(*camera->GetCameraPosition());
-
-	angle += .3f;
 
 	// RENDER SKYBOX
 	m_skybox_shader->ActivateShaderProgram();
@@ -265,7 +270,7 @@ void OGLWindow::Render()
 	terrain->Render();
 
 	// RENDER HOUSES
-	//house->Rotate(0.3f, glm::vec3(0.0f, 1.0f, 0.0f));
+	//house->Rotate(0.2f, glm::vec3(0.0f, 1.0f, 0.0f));
 	transformation = house->GetTransformationMatrix();
 	SetUniforms();
 	house->Render();
@@ -280,11 +285,21 @@ void OGLWindow::Render()
 	super_secret->Render();
 
 	// RENDER PLANE
-	//player->GetModel()->Rotate(-0.5, glm::vec3(1.0f, 1.0f, 1.0f));
-	transformation = player->GetModel()->GetTransformationMatrix();
+	plane->Rotate(-0.5f, glm::vec3(0.0f, 1.0f, 1.0f));
+	plane->Translate(glm::vec3(-80.0f, 0.0f, 0.0f));
+	transformation = plane->GetTransformationMatrix();
 	SetUniforms();
-	player->GetModel()->Render();
+	plane->Render();
 
+	raceRing->SetTransformationMatrix(racePointTransforms[player->GetCurrentRing()]);
+	transformation = raceRing->GetTransformationMatrix();
+	SetUniforms();
+	raceRing->Render();
+
+	CheckCollisions();
+
+	// Camera movement
+	camera->DollyCamera(player->GetSpeed());
 
 	// Get and store current cursor position
 	POINT cursorPos;
@@ -298,7 +313,9 @@ void OGLWindow::Render()
 	// Yaw and pitch the camera based on the difference the mouse travelled from the centre of the window.
 	if (abs(xDiff) > 0 || abs(yDiff) > 0)
 	{
-		camera->RotateCamera(xDiff * camera_smoothing, yDiff * camera_smoothing, 0);
+		float camYaw = ((float)xDiff * camera_smoothing);
+		float camPitch = ((float)yDiff * camera_smoothing);
+		camera->RotateCamera(camYaw, camPitch, 0);
 	}
 	
 	// Set the cursor back to the centre of the screen
@@ -318,17 +335,11 @@ void OGLWindow::Resize( int width, int height )
 	//shadowmapFBO->Init(width, height);
 
 	glViewport( 0, 0, width, height );
-	
-	glMatrixMode( GL_PROJECTION );
-	glLoadIdentity();
 
 	glm::mat4 cam_projection = glm::perspective(glm::radians(camera->GetCameraFOV()), camera->GetCameraAspectRatio(),
-		0.1f, 5000.0f);
+		0.1f, 50000.0f);
 
 	camera->SetProjectionMatrix(&cam_projection[0][0]);
-	
-	glMatrixMode( GL_MODELVIEW );
-	glLoadIdentity();
 
 	return;
 }
@@ -338,7 +349,7 @@ void OGLWindow::InitOGLState()
 	glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	SetVSync(true);
 
 	//Initialise OGL shader
@@ -393,7 +404,8 @@ void OGLWindow::HandleKeyDown()
 	if (GetAsyncKeyState(W))
 	{
 		//Dolly
-		camera->DollyCamera(5);
+		//camera->DollyCamera(5);
+		player->AddSpeed(0.25f);
 	}
 
 	if (GetAsyncKeyState(A))
@@ -405,7 +417,8 @@ void OGLWindow::HandleKeyDown()
 	if (GetAsyncKeyState(S))
 	{
 		//Dolly
-		camera->DollyCamera(-5);
+		//camera->DollyCamera(-5);
+		player->AddSpeed(-0.25);
 	}
 
 	if (GetAsyncKeyState(D))
@@ -448,6 +461,8 @@ void OGLWindow::HandleKeyDown()
 		linearAtten -= 0.00025f; // Increase arealight attenuation
 	if (GetAsyncKeyState(VK_SUBTRACT))
 		linearAtten += 0.00025f; // decrease arealight attenuation
+	if (GetAsyncKeyState(VK_F1))	
+		ResetRacingRings();
 }
 
 void OGLWindow::SetUniforms()
@@ -458,7 +473,6 @@ void OGLWindow::SetUniforms()
 	// Matrix uniforms
 	glUniformMatrix4fv(0, 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(1, 1, GL_FALSE, &projection[0][0]);
-	glUniformMatrix4fv(3, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(4, 1, GL_FALSE, &transformation[0][0]);
 	glUniformMatrix4fv(5, 1, GL_FALSE, &normal[0][0]);
 
@@ -475,41 +489,20 @@ void OGLWindow::SetUniforms()
 
 	glm::vec3 areaPos = areaLight->GetPosition();
 	glm::vec3 areaCol = areaLight->GetColor();
-	glUniform3f(20, areaPos[0], areaPos[1], areaPos[2]);
-	glUniform3f(22, areaCol[0], areaCol[1], areaCol[2]);
-	glUniform1f(23, areaLight->GetIntensity());
-	glUniform1f(24, areaLight->GetConstAtten());
-//	glUniform1f(25, areaLight->GetLinearAtten());
-	glUniform1f(25, linearAtten);
-	glUniform1f(26, areaLight->GetExpAtten());
+	glUniform3f(11, areaPos[0], areaPos[1], areaPos[2]);
 
-	glm::vec3 spotPos = spotLight->GetPosition();
-	glm::vec3 spotCol = spotLight->GetColor();
-	glm::vec3 spotDir = spotLight->GetDirection();
-	//glUniform3f(11, spotPos[0], spotPos[1], spotPos[2]);
-	//glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
-	//glUniform3f(13, spotCol[0], spotCol[1], spotCol[2]);
-	//glUniform1f(14, spotLight->GetIntensity());
-	//glUniform1f(15, spotLight->GetExponent());
-	//glUniform1f(16, spotLight->GetCutOff());
-	glUniform3f(11, spotPos[0], spotPos[1], spotPos[2]);
-	glUniform3f(12, spotDir[0], spotDir[1], spotDir[2]);
-	glUniform3f(13, spotCol[0], spotCol[1], spotCol[2]);
-	glUniform1f(14, spotLight->GetIntensity());
-	glUniform1f(15, 35.0f);
-	glUniform1f(16, 25.0f);
-	glUniform1f(17, 1.0f);
-	glUniform1f(18, 0.09f);
-	glUniform1f(19, 0.032f);
-
+	glUniform3f(13, areaCol[0], areaCol[1], areaCol[2]);
+	glUniform1f(14, areaLight->GetIntensity());
+	glUniform1f(15, areaLight->GetConstAtten());
+//	glUniform1f(16, areaLight->GetLinearAtten());
+	glUniform1f(16, linearAtten);
+	glUniform1f(17, areaLight->GetExpAtten());
 }
-
 
 void OGLWindow::BuildMatrices()
 {
 	projection = camera->GetProjectionMatrix();
 	view = *camera->GetViewMatrix();
-	model = glm::mat4(1.0f);
 	normal = glm::inverseTranspose(transformation);
 }
 
@@ -531,4 +524,58 @@ void OGLWindow::SetVSync(bool sync)
 		if (wglSwapIntervalEXT)
 			wglSwapIntervalEXT(sync);
 	}
+}
+
+void OGLWindow::CreateRacingRings()
+{
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(1000.0f, 1200.0f, 0.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(1400.0f, 1200.0f, -600.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(1400.0f, 1200.0f, -1600.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(800.0f, 1200.0f, -2000.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(0.0f, 1200.0f, -2000.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(-800.0f, 1200.0f, -2000.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(-1600.0f, 1200.0f, -1600.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	racePointTransforms.push_back(transform);
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(-1200.0f, 1200.0f, -800.0f));
+	transform = glm::scale(transform, glm::vec3(30.0f, 30.0f, 30.0f));
+	transform = glm::rotate(transform, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	racePointTransforms.push_back(transform);
+
+	ResetRacingRings();
+}
+
+void OGLWindow::ResetRacingRings()
+{
+	player->SetCurrentRing(0);
 }

@@ -45,6 +45,12 @@
     <Filter Include="Source Files\Framework">
       <UniqueIdentifier>{ee2657e5-8e5d-4fec-b0da-d191314af082}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FlightSimulatorComponents\Lights">
+      <UniqueIdentifier>{03a9bcc3-ec73-4ecf-9358-912bc4502466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FlightSimulatorComponents\Lights">
+      <UniqueIdentifier>{60538ae7-c4d9-43a1-bf43-4d0c10dc02bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGL\OGLWindow.h">
@@ -119,18 +125,6 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
-      <Filter>Header Files\FlightSimulatorComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="AreaLight.h">
-      <Filter>Header Files\FlightSimulatorComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="SpotLight.h">
-      <Filter>Header Files\FlightSimulatorComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseLight.h">
-      <Filter>Header Files\FlightSimulatorComponents</Filter>
-    </ClInclude>
     <ClInclude Include="ShadowMapFBO.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
@@ -138,6 +132,24 @@
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
     <ClInclude Include="WorldStructure.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="AreaLight.h">
+      <Filter>Header Files\FlightSimulatorComponents\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseLight.h">
+      <Filter>Header Files\FlightSimulatorComponents\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\FlightSimulatorComponents\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files\FlightSimulatorComponents\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="RacingStructure.h">
+      <Filter>Header Files\FlightSimulatorComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
       <Filter>Header Files\FlightSimulatorComponents</Filter>
     </ClInclude>
   </ItemGroup>
@@ -184,15 +196,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionalLight.cpp">
-      <Filter>Source Files\FlightSimulatorComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="AreaLight.cpp">
-      <Filter>Source Files\FlightSimulatorComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="SpotLight.cpp">
-      <Filter>Source Files\FlightSimulatorComponents</Filter>
-    </ClCompile>
     <ClCompile Include="ShadowMapFBO.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
@@ -200,6 +203,21 @@
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
     <ClCompile Include="WorldStructure.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaLight.cpp">
+      <Filter>Source Files\FlightSimulatorComponents\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files\FlightSimulatorComponents\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files\FlightSimulatorComponents\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="RacingStructure.cpp">
+      <Filter>Source Files\FlightSimulatorComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
       <Filter>Source Files\FlightSimulatorComponents</Filter>
     </ClCompile>
   </ItemGroup>

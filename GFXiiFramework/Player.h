@@ -2,22 +2,32 @@
 #define player_h
 
 #include "WorldStructure.h"
+#include "BoxCollider.h"
 
 class Player 
 {
 private:
 
-	WorldStructure* playermodel;
+	Camera* camera;
+	BoxCollider* collider;
 
-	glm::mat4 viewmatrix;
-	glm::vec3 forwardVec;
+	float currentSpeed;
+
+	int currentRing;
 
 public:
 
-	Player(LPCWSTR);
+	Player(Camera*);
 
-	WorldStructure* GetModel();
+	Camera& GetCamera();
 
+	BoxCollider& GetCollider();
+
+	void AddSpeed(float);
+	float GetSpeed();
+
+	void SetCurrentRing(int);
+	int GetCurrentRing();
 };
 
 #endif

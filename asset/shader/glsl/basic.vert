@@ -3,7 +3,6 @@
 layout (location = 0) uniform mat4 view;	//view matrix
 layout (location = 1) uniform mat4 projection;	//projection matrix
 layout (location = 2) uniform mat4 lightmatrix;
-layout (location = 3) uniform mat4 model;	//model matrix
 layout (location = 4) uniform mat4 transformation;	// model transformation matrix
 layout (location = 5) uniform mat4 normalmatrix; // normal matrix (inverse transpose model)
 layout (location = 6) uniform vec3 campos;

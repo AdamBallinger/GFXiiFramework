@@ -18,9 +18,6 @@ void Camera::InitCamera()
 	m_rightVector = glm::cross(m_direction, m_upVector);
 	m_upVector = glm::cross(m_rightVector, m_direction);
 
-	totalXRotation = 0.0f;
-	totalYRotation = 0.0f;
-	totalZRotation = 0.0f;
 	UpdateViewMatrix();
 }
 
@@ -91,26 +88,15 @@ void Camera::PedCamera(float _amount)
 
 void Camera::RotateCamera(float _yaw, float _pitch, float _roll)
 {
-	totalXRotation += _yaw;
-	totalYRotation += _pitch;
-	totalZRotation += _roll;
-
-	if (totalXRotation > 360.0f) totalXRotation = 0.0f;
-	if (totalXRotation < 0.0f) totalXRotation = 360.0f;
-	if (totalYRotation > 360.0f) totalYRotation = 0.0f;
-	if (totalYRotation < 0.0f) totalYRotation = 360.0f;
-	if (totalZRotation > 360.0f) totalZRotation = 0.0f;
-	if (totalZRotation < 0.0f) totalZRotation = 360.0f;
-
 	_yaw = glm::radians(_yaw);
 	_pitch = glm::radians(_pitch);
 	_roll = glm::radians(_roll);
 
-	glm::fquat pitchQuat = glm::fquat(glm::cos(_pitch / 2.0f), m_rightVector * glm::sin(_pitch / 2.0f));
-	glm::fquat yawQuat = glm::fquat(glm::cos(_yaw / 2.0f), glm::vec3(0.0f, 1.0f, 0.0f) * glm::sin(_yaw / 2.0f));
-	glm::fquat rollQuat = glm::fquat(glm::cos(_roll / 2.0f), m_direction * glm::sin(_roll / 2.0f));
+	glm::quat pitchQuat = glm::quat(glm::cos(_pitch / 2.0f), m_rightVector * glm::sin(_pitch / 2.0f));
+	glm::quat yawQuat = glm::quat(glm::cos(_yaw / 2.0f), glm::vec3(0.0f, 1.0f, 0.0f) * glm::sin(_yaw / 2.0f));
+	glm::quat rollQuat = glm::quat(glm::cos(_roll / 2.0f), m_direction * glm::sin(_roll / 2.0f));
 
-	glm::fquat rotQuat = yawQuat * pitchQuat * rollQuat;
+	glm::quat rotQuat = yawQuat * pitchQuat * rollQuat;
 
 	m_direction = rotQuat * m_direction * glm::conjugate(rotQuat);
 	m_upVector = rotQuat * m_upVector * glm::conjugate(rotQuat);

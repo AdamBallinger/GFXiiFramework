@@ -20,6 +20,7 @@
 
 #include "../WorldStructure.h"
 #include "../Player.h"
+#include "../RacingStructure.h"
 
 class OGLWindow : public RenderWindow
 {
@@ -36,14 +37,13 @@ class OGLWindow : public RenderWindow
 		WorldStructure* house;
 		WorldStructure* house_med;
 		WorldStructure* super_secret;
+		WorldStructure* plane;
+
+		RacingStructure* raceRing;
+		std::vector<glm::mat4> racePointTransforms;
 
 		ShadowMapFBO *shadowmapFBO;
 
-		//TODO: move plane mesh into player class
-		//Renderable* plane_mesh;
-		//OGLTexture* plane_texture;
-		//OGLTexture* plane_normal;
-		//OGLTexture* plane_specular;
 		Player* player;
 
 		Camera* camera;
@@ -58,17 +58,12 @@ class OGLWindow : public RenderWindow
 		// Matrices
 		glm::mat4 projection;
 		glm::mat4 view;
-		glm::mat4 model;
 		glm::mat4 normal;
-		//float modelview[16];
 		glm::mat4 transformation;
 
 		//Declear an OGL shader program
 		OGLShaderProgram		*m_shader;
 		OGLShaderProgram		*m_skybox_shader;
-		int						m_uniform_modelview;
-		int						m_uniform_projection;
-		int                     m_uniform_texture;
 		int						m_texDefaultSampler;
 
 		// Store the byte values for required key inputs.
@@ -107,4 +102,8 @@ protected:
 		void SetUniforms();
 		void BuildMatrices();
 		void SetVSync(bool);
+
+		void CheckCollisions();
+		void CreateRacingRings();
+		void ResetRacingRings();
 };

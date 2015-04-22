@@ -29,16 +29,6 @@ struct DirectionalLight
 	BaseLight base;
 };
 
-struct SpotLight
-{
-	BaseLight base;
-	float cutOff;
-	float outerCutOff;
-	float constantAtten;
-	float linearAtten;
-	float quadraticAtten;
-};
-
 struct AreaLight
 {
 	BaseLight base;
@@ -48,13 +38,11 @@ struct AreaLight
 };
 
 layout (location = 7) uniform DirectionalLight directionalLight;
-layout (location = 11) uniform SpotLight spotLight;
-layout (location = 20) uniform AreaLight areaLight;
+layout (location = 11) uniform AreaLight areaLight;
 
 vec3 calcBumpedNormal();
 vec4 calcLightColor(BaseLight light, vec3 lightDir, vec3 normal, float shadowFactor);
 vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal);
-vec4 calcSpotLightColor(SpotLight light, vec3 normal);
 vec4 calcAreaLightColor(AreaLight light, vec3 normal);
 
 float calcShadoFactor(vec4 lightSpacePosition);
@@ -73,7 +61,6 @@ void main()
 	//Calculate lighting color for light types
 	lightingColor += calcDirectionalLightColor(directionalLight, normal);
 	lightingColor += calcAreaLightColor(areaLight, normal);
-	lightingColor += calcSpotLightColor(spotLight, normal); 
 
 	finalColor = texDiffuse * lightingColor;
 	outFrag = finalColor;
@@ -158,24 +145,6 @@ vec4 calcDirectionalLightColor(DirectionalLight light, vec3 normal)
 	finalColor = calcLightColor(light.base, light.base.direction, normal, 1.0f);
 
 	return finalColor;
-}
-
-vec4 calcSpotLightColor(SpotLight light, vec3 normal)
-{
-	vec4 finalColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	vec4 lightDir = normalize(vec4(light.base.position, 1.0f) - vposition);
-
-	finalColor = calcLightColor(light.base, light.base.direction, normal, 1.0f);
-
-	float dist = length(vec4(light.base.position, 1.0f) - vposition);
-	float attenuation = 1.0f / (light.constantAtten + light.linearAtten * dist + light.quadraticAtten * pow(dist, 2));
-
-	float theta = dot(lightDir.xyz, normalize(-light.base.direction));
-	float epsilon = light.cutOff - light.outerCutOff;
-	float fade = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
-	finalColor *= attenuation * fade;
-	return (finalColor);
 }
 
 vec4 calcAreaLightColor(AreaLight light, vec3 normal)

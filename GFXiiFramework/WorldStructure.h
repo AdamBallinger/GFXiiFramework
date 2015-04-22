@@ -19,6 +19,7 @@ private:
 
 public:
 
+	WorldStructure();
 	WorldStructure(LPCWSTR);
 	~WorldStructure();
 
@@ -30,6 +31,11 @@ public:
 	inline glm::mat4 GetTransformationMatrix()
 	{
 		return transformationMatrix;
+	}
+
+	inline void SetTransformationMatrix(glm::mat4& _transformationMatrix)
+	{
+		transformationMatrix = _transformationMatrix;
 	}
 
 	inline void Translate(glm::vec3 _translation)
@@ -45,6 +51,11 @@ public:
 	inline void Rotate(float _degrees, glm::vec3 _axis)
 	{
 		transformationMatrix = glm::rotate(transformationMatrix, glm::radians(_degrees), _axis);
+	}
+
+	inline glm::vec3 ExtractPosition()
+	{
+		return glm::vec3(transformationMatrix[3]);
 	}
 
 	inline void SetDiffuseTexture(std::string _diffusePath)

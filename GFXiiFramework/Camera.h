@@ -22,6 +22,7 @@ public:
 private:
 	glm::mat4						m_viewMatrix;				//View Matrix
 	glm::mat4						m_projectionMatrix;			//Projection Matrix
+	glm::mat4						m_transformMatrix;
 	glm::vec3						m_position;					//Position
 	glm::vec3						m_upVector;					//up vector
 	glm::vec3						m_rightVector;				//right vector
@@ -31,10 +32,6 @@ private:
 	ECameraType						m_cameratype;				//Projection time
 	float							m_fov;						//vertical field of view in degree
 	float							m_aspectRatio;
-
-	float totalXRotation;
-	float totalYRotation;
-	float totalZRotation;
 
 public:
 
@@ -103,19 +100,9 @@ public:
 		return m_projectionMatrix;
 	}
 
-	inline float GetXRotation()
+	inline glm::mat4 GetTransformationMatrix()
 	{
-		return totalXRotation;
-	}
-
-	inline float GetYRotation()
-	{
-		return totalYRotation;
-	}
-
-	inline float GetZRotation()
-	{
-		return totalZRotation;
+		return m_transformMatrix;
 	}
 
 	//TODO: Implement the following camera movement
