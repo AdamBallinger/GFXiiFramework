@@ -32,6 +32,8 @@ class OGLWindow : public RenderWindow
 		int			m_width;
 		int			m_height;
 
+		int currentRenderMode = 0;
+
 		float linearAtten = 0.05f;
 
 		WorldStructure* house;

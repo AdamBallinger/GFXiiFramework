@@ -5,6 +5,7 @@ layout (binding = 1) uniform sampler2D texNormal;
 layout (binding = 2) uniform sampler2D texSpec;
 layout (binding = 3) uniform sampler2D texEnv;
 layout (binding = 4) uniform sampler2D shadowmap;
+layout (location = 50) uniform int renderMode;
 
 in vec4 outNormal;	//input: normal
 in vec4 lightvec;	//input: light vector
@@ -63,9 +64,23 @@ void main()
 	lightingColor += calcAreaLightColor(areaLight, normal);
 
 	finalColor = texDiffuse * lightingColor;
-	outFrag = finalColor;
-	//outFrag = vec4(normal, 1.0f);
-	//outFrag = vec4(depth); 
+
+	if(renderMode == 0)
+	{
+		outFrag = finalColor;
+	}
+	else if(renderMode == 1) 
+	{
+		outFrag = vec4(normal, 1.0f);
+	}
+	else if(renderMode == 2)
+	{
+		outFrag = vec4(depth); 
+	}
+	else
+	{
+		outFrag = finalColor;
+	}
 }
 
 float calcShadowFactor(vec4 lightSpacePosition)

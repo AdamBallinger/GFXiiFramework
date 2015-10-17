@@ -149,7 +149,7 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 	camera->SetCameraFOV(70);
 
 	directionalLight = new DirectionalLight();
-	directionalLight->SetDirection(glm::vec3(-1.0f, 0.0f, 0.0f));
+	directionalLight->SetDirection(glm::vec3(-1.0f, -0.2f, 0.0f));
 	directionalLight->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	directionalLight->SetIntensity(1.0f);
 
@@ -225,7 +225,11 @@ BOOL OGLWindow::InitWindow(HINSTANCE hInstance, int width, int height)
 
 void OGLWindow::ShadowMapPass()
 {
-	
+	shadowmapFBO->BindForWriting();
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OGLWindow::CheckCollisions()
@@ -242,11 +246,7 @@ void OGLWindow::CheckCollisions()
 
 void OGLWindow::Render()
 {
-	ShadowMapPass();
-
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-	glLoadIdentity();
 
 	glBindSampler(0, m_texDefaultSampler);
 
@@ -297,6 +297,7 @@ void OGLWindow::Render()
 	raceRing->Render();
 
 	CheckCollisions();
+	ShadowMapPass();
 
 	// Camera movement
 	camera->DollyCamera(player->GetSpeed());
@@ -332,7 +333,7 @@ void OGLWindow::Resize( int width, int height )
 {
 	float aspect_ratio = (float)width/(float)height;
 	camera->SetCameraAspectRatio(aspect_ratio);
-	//shadowmapFBO->Init(width, height);
+	shadowmapFBO->Init(width, height);
 
 	glViewport( 0, 0, width, height );
 
@@ -463,6 +464,12 @@ void OGLWindow::HandleKeyDown()
 		linearAtten += 0.00025f; // decrease arealight attenuation
 	if (GetAsyncKeyState(VK_F1))	
 		ResetRacingRings();
+	if (GetAsyncKeyState(VK_F2))
+		currentRenderMode = 1;
+	if (GetAsyncKeyState(VK_F3))
+		currentRenderMode = 2;
+	if (GetAsyncKeyState(VK_F4))
+		currentRenderMode = 0;
 }
 
 void OGLWindow::SetUniforms()
@@ -475,6 +482,7 @@ void OGLWindow::SetUniforms()
 	glUniformMatrix4fv(1, 1, GL_FALSE, &projection[0][0]);
 	glUniformMatrix4fv(4, 1, GL_FALSE, &transformation[0][0]);
 	glUniformMatrix4fv(5, 1, GL_FALSE, &normal[0][0]);
+	glUniform1i(50, currentRenderMode);
 
 	// Vector uniforms
 	glm::vec3 campos = *camera->GetCameraPosition();
